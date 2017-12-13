@@ -1,0 +1,14 @@
+{
+    "app": {
+        "name": "LBS Engine",
+        "logging": true,
+        "externalData": false,
+        "gps": true
+    },
+    "map": {
+        "center": [51.962522, 7.625615],
+        "zoomable": true,
+        "draggable": true,
+        "zoom": 8
+    }
+}
