@@ -1,7 +1,7 @@
 'use strict';
-var React = require('react');
-var leaflet = require('react-leaflet');
-var config = require('./config.json');
+const React = require('react');
+const leaflet = require('react-leaflet');
+const config = require('./config.json');
 
 //get the map pre-settings from the config file
 const position = config.map.center;

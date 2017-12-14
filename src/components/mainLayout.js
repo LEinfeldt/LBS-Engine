@@ -1,10 +1,14 @@
 "use strict";
 
-var React = require('react');
-var Ons = require('react-onsenui');
+const React = require('react');
+const Ons = require('react-onsenui');
+
+//custom files
+const settings = require('./settings.js');
 
 /**
- * Main frame for the app
+ * Main frame for the app.
+ * Contains the Toolbar in the top and a sidebar to select the mode
  */
 class Main extends React.Component {
 
@@ -18,6 +22,7 @@ class Main extends React.Component {
         }
     }
 
+    //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
         return (
             <Ons.Toolbar>
@@ -31,18 +36,23 @@ class Main extends React.Component {
         )
     }
 
+    //hide sidebar
     hide() {
         this.setState({isOpen: false});
     }
 
+    //show sidebar
     show() {
         this.setState({isOpen: true});
     }
 
+    //insert rows into the sidebar, with image and name
     renderRow(title, index) {
         if(index == 0) {
             return (
-                <Ons.ListItem key={index}>
+                <Ons.ListItem 
+                    key={index} 
+                    tappable={true}>
                     <div className='left'>
                         <Ons.Icon icon='md-map'/>
                     </div>
@@ -54,7 +64,9 @@ class Main extends React.Component {
         }
         else if(index == 1) {
             return (
-                <Ons.ListItem key={index}>
+                <Ons.ListItem 
+                    key={index} 
+                    tappable={true}>
                     <div className='left'>
                         <Ons.Icon icon='md-image'/>
                     </div>
@@ -66,7 +78,9 @@ class Main extends React.Component {
         }
         else {
             return (
-                <Ons.ListItem key={index}>
+                <Ons.ListItem 
+                    key={index} 
+                    tappable={true}>
                     <div className='left'>
                         <Ons.Icon icon='md-settings'/>
                     </div>
@@ -78,6 +92,7 @@ class Main extends React.Component {
         }
     }
 
+    //render sidebar and toolbar
     render() {
         return (
             <Ons.Splitter>
@@ -95,7 +110,6 @@ class Main extends React.Component {
             </Ons.Splitter>
         )
     }
-
 }
 
 module.exports = {
