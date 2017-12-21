@@ -8,6 +8,8 @@ const Ons = require('react-onsenui');
 const main = require('./components/mainLayout.js');
 const config = require('./config.json');
 const map = require('./map.js');
+const settings = require('./components/settings.js');
+const pictureView = require('./components/pictureView.js');
 
 
 function renderPage(route, navigator) {
@@ -24,7 +26,7 @@ function App() {
             initialRoute={{
                 component: main.Main,
                 key: 'MAP_VIEW',
-                children: map.Map,
+                children: <pictureView.PictureView />,
                 title: config.app.name
             }}
         />
@@ -38,68 +40,3 @@ ons.ready(function() {
         document.getElementById('root')
     )
 });
-/////////////////////////////////////////////////////////////////////////////////////
-/*
-var index = 0;
-
-var MyPage = React.createClass({
-  renderToolbar: function(route, navigator) {
-    const backButton = route.hasBackButton
-      ? <Ons.BackButton onClick={this.handleClick.bind(this, navigator)}>Back</Ons.BackButton>
-      : null;
-
-    return (
-      <Ons.Toolbar>
-        <div className='left'>{backButton}</div>
-        <div className='center'>{route.title}</div>
-      </Ons.Toolbar>
-    );
-  },
-
-  handleClick: function(navigator) {
-    ons.notification.confirm('Do you really want to go back?')
-      .then((response) => {
-        if (response === 1) {
-          navigator.popPage();
-        }
-      });
-  },
-
-  pushPage: function(navigator) {
-    navigator.pushPage({
-      title: `Another page ${index}`,
-      hasBackButton: true
-    });
-
-    index++;
-  },
-
-  renderPage: function(route, navigator) {
-    return (
-      <Ons.Page key={route.title} renderToolbar={this.renderToolbar.bind(this, route, navigator)}>
-        <section style={{margin: '16px', textAlign: 'center'}}>
-          <Ons.Button onClick={this.pushPage.bind(this, navigator)}>
-            Push Page
-          </Ons.Button>
-        </section>
-      </Ons.Page>
-    );
-  },
-
-  render: function() {
-    return (
-      <Ons.Navigator
-        swipeable
-        renderPage={this.renderPage}
-        initialRoute={{
-          title: 'First page',
-          hasBackButton: false
-        }}
-      />
-    );
-  }
-});
-
-ons.ready(function() {
-  ReactDOM.render(<MyPage />, document.getElementById('app'));
-});*/
