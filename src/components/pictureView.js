@@ -4,7 +4,7 @@ const React = require('react');
 const Ons = require('react-onsenui');
 
 //custom imports
-const map = require('../map.js');
+const map = require('./map.js');
 
 /**
  * Component for displaying the picture view. On top a picture is displayed and below a map.
@@ -32,7 +32,7 @@ class PictureView extends React.Component {
                     <img src="../res/icon/android/icon-96-xhdpi.png"/>
                 </Ons.Row>
                 <Ons.Row style={{width: '100%', height: '50%'}}>
-                    {map.Map}
+                    <map.Map />
                 </Ons.Row>
             </div>
         )

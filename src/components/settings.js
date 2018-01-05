@@ -37,20 +37,22 @@ class Settings extends React.Component {
 
     render() {
         return (
-            <section style={{textAlign: 'center'}}>
-                <p>Logging: </p>
-                <Ons.Switch 
-                    checked={this.state.logging}
-                    onChange={this.handleChangeLogging} />
-                <p>External Data Sources: </p>
-                <Ons.Switch 
-                    checked={this.state.externalData}
-                    onChange={this.handleChangeData} />
-                <p>GPS: </p>
-                <Ons.Switch 
-                    checked={this.state.gps}
-                    onChange={this.handleChangeGPS} />
-            </section>
+            <div>
+                <section style={{textAlign: 'center'}}>
+                    <p>Logging: </p>
+                    <Ons.Switch 
+                        checked={this.state.logging}
+                        onChange={this.handleChangeLogging} />
+                    <p>External Data Sources: </p>
+                    <Ons.Switch 
+                        checked={this.state.externalData}
+                        onChange={this.handleChangeData} />
+                    <p>GPS: </p>
+                    <Ons.Switch 
+                        checked={this.state.gps}
+                        onChange={this.handleChangeGPS} />
+                </section>
+            </div>
         )
     }
 }
