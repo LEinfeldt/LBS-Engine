@@ -5,7 +5,8 @@ const Ons = require('react-onsenui');
 const Link = require('react-router-dom').Link;
 
 //custom files
-const config = require('../config.json');
+const config = require('../../www/config/config.json');
+const layers = require('../../www/config/layers.json');
 
 
 /**
@@ -16,21 +17,51 @@ class App extends React.Component {
 
     constructor(props) {
         super(props);
-        this.show = this.show.bind(this);
-        this.hide = this.hide.bind(this);
+        this.showRight = this.showRight.bind(this);
+        this.hideRight = this.hideRight.bind(this);
+        this.hideLeft = this.hideLeft.bind(this);
+        this.showLeft = this.showLeft.bind(this);
         this.renderToolbar = this.renderToolbar.bind(this);
         this.state = {
-            isOpen: false
+            isOpenRight: false,
+            isOpenLeft: false
         }
     }
 
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
+        if(config.app.layerControl) {
+            return this.toolbarWithLayer();
+        }
+        return this.toolbarNoLayers();
+    }
+
+    //rendering the toolbar with the layers menu active
+    toolbarWithLayer() {
         return (
             <Ons.Toolbar>
                 <div className='center'>{config.app.name}</div>
                 <div className='right'>
-                    <Ons.ToolbarButton onClick={this.show}>
+                    <Ons.ToolbarButton onClick={this.showRight}>
+                        <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
+                    </Ons.ToolbarButton>
+                </div>
+                <div className='left'>
+                    <Ons.ToolbarButton onClick={this.showLeft}>
+                        <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
+                    </Ons.ToolbarButton>
+                </div>
+            </Ons.Toolbar>
+        )
+    }
+
+    //render the toolbar with the layers menu disabled
+    toolbarNoLayers() {
+        return (
+            <Ons.Toolbar>
+                <div className='center'>{config.app.name}</div>
+                <div className='right'>
+                    <Ons.ToolbarButton onClick={this.showRight}>
                         <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
                     </Ons.ToolbarButton>
                 </div>
@@ -39,17 +70,27 @@ class App extends React.Component {
     }
 
     //hide sidebar
-    hide() {
-        this.setState({isOpen: false});
+    hideRight() {
+        this.setState({isOpenRight: false});
     }
 
     //show sidebar
-    show() {
-        this.setState({isOpen: true});
+    showRight() {
+        this.setState({isOpenRight: true});
+    }
+
+    //hide sidebar
+    hideLeft() {
+        this.setState({isOpenLeft: false});
+    }
+
+    //show sidebar
+    showLeft() {
+        this.setState({isOpenLeft: true});
     }
 
     //insert rows into the sidebar, with image and name
-    renderRow(title, index) {
+    renderRowRight(title, index) {
         if(index == 0) {
             return (
                 <Link to='/' style={{ textDecoration: 'none' }} key={index}>
@@ -100,14 +141,26 @@ class App extends React.Component {
         }
     }
 
+    renderRowLeft(title, index) {
+        return (
+            <Ons.ListItem 
+                key={index} 
+                tappable={true}>
+                    <div className='center'>
+                        {title}
+                    </div>
+            </Ons.ListItem>
+        )
+    }
+
     //render sidebar and toolbar
     render() {
         return (
             <Ons.Splitter>
                 <Ons.SplitterSide side='right' width={'50%'} style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}} 
-                    swipable={true} collapse={true} isOpen={this.state.isOpen} onClose={this.hide} onOpen={this.show}>
+                    swipable={true} collapse={true} isOpen={this.state.isOpenRight} onClose={this.hideRight} onOpen={this.showRight}>
                     <Ons.Page>
-                        <Ons.List dataSource={['Map', 'Picture', 'Settings']} renderRow={this.renderRow} renderHeader={() => <Ons.ListHeader>Mode</Ons.ListHeader>} />
+                        <Ons.List dataSource={['Map', 'Picture', 'Settings']} renderRow={this.renderRowRight} renderHeader={() => <Ons.ListHeader>Mode</Ons.ListHeader>} />
                     </Ons.Page>
                 </Ons.SplitterSide>
                 <Ons.SplitterContent>
@@ -115,6 +168,12 @@ class App extends React.Component {
                     {this.props.children}
                 </Ons.Page>
                 </Ons.SplitterContent>
+                <Ons.SplitterSide side='left' width={'50%'} style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}} 
+                    swipable={true} collapse={true} isOpen={this.state.isOpenLeft} onClose={this.hideLeft} onOpen={this.showLeft}>
+                    <Ons.Page>
+                        <Ons.List dataSource={layers.layerNames} renderRow={this.renderRowLeft} renderHeader={() => <Ons.ListHeader>Layers</Ons.ListHeader>} />
+                    </Ons.Page>
+                </Ons.SplitterSide>
             </Ons.Splitter>
         )
     }

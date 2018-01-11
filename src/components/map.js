@@ -1,7 +1,7 @@
 'use strict';
 const React = require('react');
 const leaflet = require('react-leaflet');
-const config = require('../config.json');
+const config = require('../../www/config/config.json');
 
 class Map extends React.Component {
 
