@@ -22,15 +22,36 @@ class App extends React.Component {
         this.hideLeft = this.hideLeft.bind(this);
         this.showLeft = this.showLeft.bind(this);
         this.renderToolbar = this.renderToolbar.bind(this);
+        this.getLayerNames = this.getLayerNames.bind(this);
+        this.layerNames = [];
         this.state = {
             isOpenRight: false,
-            isOpenLeft: false
+            isOpenLeft: false,
+            run: false,
+            pageName: 'Map'
         }
+    }
+
+    //disable the getLayerNames from running twice (bad hack)
+    componentWillMount() {
+        this.getLayerNames();
+    }
+
+    // get the names of the layers from the layer.json file to insert them into the list of layers
+    getLayerNames() {
+        if(!this.state.run) {
+            for(var layer in layers) {
+                this.layerNames.push(layer);
+            }
+            this.setState({run: true});
+        }
+        return this.layerNames;
     }
 
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
-        if(config.app.layerControl) {
+        if(config.app.layerControl && !window.location.href.split('/').includes('settings')) {
+            //TODO: Check for the class of the children to disable the layer menu in settings view
             return this.toolbarWithLayer();
         }
         return this.toolbarNoLayers();
@@ -40,7 +61,7 @@ class App extends React.Component {
     toolbarWithLayer() {
         return (
             <Ons.Toolbar>
-                <div className='center'>{config.app.name}</div>
+                <div className='center'>{this.state.pageName}</div>
                 <div className='right'>
                     <Ons.ToolbarButton onClick={this.showRight}>
                         <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
@@ -48,7 +69,7 @@ class App extends React.Component {
                 </div>
                 <div className='left'>
                     <Ons.ToolbarButton onClick={this.showLeft}>
-                        <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
+                        <Ons.Icon icon='md-layers'></Ons.Icon>
                     </Ons.ToolbarButton>
                 </div>
             </Ons.Toolbar>
@@ -59,7 +80,7 @@ class App extends React.Component {
     toolbarNoLayers() {
         return (
             <Ons.Toolbar>
-                <div className='center'>{config.app.name}</div>
+                <div className='center'>{this.state.pageName}</div>
                 <div className='right'>
                     <Ons.ToolbarButton onClick={this.showRight}>
                         <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
@@ -88,6 +109,7 @@ class App extends React.Component {
     showLeft() {
         this.setState({isOpenLeft: true});
     }
+
 
     //insert rows into the sidebar, with image and name
     renderRowRight(title, index) {
@@ -141,6 +163,7 @@ class App extends React.Component {
         }
     }
 
+    //render the list elements for the list of layers
     renderRowLeft(title, index) {
         return (
             <Ons.ListItem 
@@ -153,7 +176,7 @@ class App extends React.Component {
         )
     }
 
-    //render sidebar and toolbar
+    //render sidebars and toolbar
     render() {
         return (
             <Ons.Splitter>
@@ -171,7 +194,7 @@ class App extends React.Component {
                 <Ons.SplitterSide side='left' width={'50%'} style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}} 
                     swipable={true} collapse={true} isOpen={this.state.isOpenLeft} onClose={this.hideLeft} onOpen={this.showLeft}>
                     <Ons.Page>
-                        <Ons.List dataSource={layers.layerNames} renderRow={this.renderRowLeft} renderHeader={() => <Ons.ListHeader>Layers</Ons.ListHeader>} />
+                        <Ons.List dataSource={this.getLayerNames()} renderRow={this.renderRowLeft} renderHeader={() => <Ons.ListHeader>Layers</Ons.ListHeader>} />
                     </Ons.Page>
                 </Ons.SplitterSide>
             </Ons.Splitter>

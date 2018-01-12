@@ -1,3 +1,57 @@
 {
-    "layerNames": ["Layer1", "Layer2", "Layer3"]
+    "Layer1": {
+        "items": [
+            {
+                "coords": [
+                    52.00,
+                    7.00
+                ],
+                "name": "first POI"
+            },
+            {
+                "coords": [
+                    53.00,
+                    7.00
+                ],
+                "name": "second POI"
+            }
+        ],
+        "color": "blue"
+    },
+    "Layer2": {
+        "items": [
+            {
+                "coords": [
+                    52.00,
+                    8.00
+                ],
+                "name": "third POI"
+            },
+            {
+                "coords": [
+                    52.00,
+                    9.00
+                ],
+                "name": "fourth POI"
+            }
+        ]
+    },
+    "Layer3": {
+        "items": [
+            {
+                "coords": [
+                    51.00,
+                    7.00
+                ],
+                "name": "fifth POI"
+            },
+            {
+                "coords": [
+                    50.00,
+                    7.00
+                ],
+                "name": "sixth POI"
+            }
+        ]
+    }
 }
