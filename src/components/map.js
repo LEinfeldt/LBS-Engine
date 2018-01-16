@@ -9,15 +9,15 @@ class Map extends React.Component {
     constructor(props) {
         super(props);
         this.addLayer = this.addLayer.bind(this);
+        this.renderMapWithLayers = this.renderMapWithLayers.bind(this);
         //get the settings from the config file
         this.state = {
             position: config.map.center,
-            zoom: config.map.zoom,
-            dragging: config.map.draggable,
-            zoomable: config.map.zoomable
+            zoom: config.map.zoom
         }
     }
 
+    //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
     addLayer() {
         var mapLayers = [];
         for(let layer in layers) {
@@ -30,22 +30,9 @@ class Map extends React.Component {
         return mapLayers;
     }
 
-    /**
-     * Toggle the visibility of a layer specified in the param "index"
-     * @param {String} layerName Name of the layer to be toggled
-     */
-    toggleLayer(layerName) {
-        for(let layer in layers) {
-            if(layer == layerName) {
-                leaflet.LayersControl.Overlay.addLayer(layerName);
-            }
-        }
-        
-    }
-
-    render() {
+    renderMapWithLayers() {
         return (
-            <leaflet.Map center={this.state.position} zoom={this.state.zoom} dragging={this.state.dragging} zoomControl={this.state.zoomable} scrollWheelZoom={this.state.zoomable} zoomDelta={this.state.zoomable == false ? 0 : 1 }>
+            <leaflet.Map center={this.state.position} zoom={this.state.zoom} dragging={this.props.draggable} zoomControl={this.props.zoomable} scrollWheelZoom={this.props.zoomable} zoomDelta={this.props.zoomable == false ? 0 : 1 }>
                 <leaflet.TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -55,6 +42,25 @@ class Map extends React.Component {
                 </leaflet.LayersControl>
             </leaflet.Map>
         )
+    }
+
+    //render the map with the layerControl
+    render() {
+        //if the layerControl is active, the map is rendered with the layercontrol
+        if(this.props.layerConrol) {
+            this.renderMapWithLayers()
+        }
+        else {
+            //return the map without any layers shown
+            return (
+                <leaflet.Map center={this.state.position} zoom={this.state.zoom} dragging={this.props.draggable} zoomControl={this.props.zoomable} scrollWheelZoom={this.props.zoomable} zoomDelta={this.props.zoomable == false ? 0 : 1 }>
+                    <leaflet.TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                    />
+                </leaflet.Map>
+            )
+        }
     }
 }
 

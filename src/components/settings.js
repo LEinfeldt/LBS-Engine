@@ -16,23 +16,39 @@ class Settings extends React.Component {
         this.handleChangeData = this.handleChangeData.bind(this);
         this.handleChangeLogging = this.handleChangeLogging.bind(this);
         this.handleChangeGPS = this.handleChangeGPS.bind(this);
-        this.state = {
-            logging: config.app.logging,
-            externalData: config.app.externalData,
-            gps: config.app.gps
-        }
+        this.handleChangeLayerControl = this.handleChangeLayerControl.bind(this);
+        this.handleChangeDragMap =  this.handleChangeDragMap.bind(this);
+        this.handleChangeZoomMap = this.handleChangeZoomMap.bind(this);
     }
 
+    //handle toggle for logging
     handleChangeLogging(e) {
-        this.setState({logging: e.target.checked});
+        this.props.onLoggingChange(e.target.checked);
     }
 
+    //handle toggle for using external data
     handleChangeData(e) {
-        this.setState({externalData: e.target.checked});
+        this.props.onDataChange(e.target.checked);
     }
 
+    //handle toggle for using GPS
     handleChangeGPS(e) {
-        this.setState({gps: e.target.checked});
+        this.props.onGpsChange(e.target.checked);
+    }
+
+    //handle toggle for layerControl
+    handleChangeLayerControl(e) {
+        this.props.onLayerControlChange(e.target.checked);
+    }
+
+    //handle toggle of map dragging 
+    handleChangeDragMap(e) {
+        this.props.onDragMapChange(e.target.checked);
+    }
+
+    //handle toggle of map zooming
+    handleChangeZoomMap(e) {
+        this.props.onZoomMapChange(e.target.checked);
     }
 
     render() {
@@ -41,16 +57,28 @@ class Settings extends React.Component {
                 <section style={{textAlign: 'center'}}>
                     <p>Logging: </p>
                     <Ons.Switch 
-                        checked={this.state.logging}
+                        checked={this.props.logging}
                         onChange={this.handleChangeLogging} />
                     <p>External Data Sources: </p>
                     <Ons.Switch 
-                        checked={this.state.externalData}
+                        checked={this.props.externalData}
                         onChange={this.handleChangeData} />
                     <p>GPS: </p>
                     <Ons.Switch 
-                        checked={this.state.gps}
+                        checked={this.props.gps}
                         onChange={this.handleChangeGPS} />
+                    <p>Layer Control: </p>
+                    <Ons.Switch 
+                        checked={this.props.layerControl}
+                        onChange={this.handleChangeLayerControl} />
+                    <p>Dragging the map: </p>
+                    <Ons.Switch 
+                        checked={this.props.draggable}
+                        onChange={this.handleChangeDragMap} />
+                    <p>Zoom map: </p>
+                    <Ons.Switch 
+                        checked={this.props.zoomable}
+                        onChange={this.handleChangeZoomMap} />
                 </section>
             </div>
         )

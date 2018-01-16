@@ -17,19 +17,68 @@ class App extends React.Component {
 
     constructor(props) {
         super(props);
-        this.showRight = this.showRight.bind(this);
-        this.hideRight = this.hideRight.bind(this);
-        this.hideLeft = this.hideLeft.bind(this);
-        this.showLeft = this.showLeft.bind(this);
+        this.show = this.show.bind(this);
+        this.hide = this.hide.bind(this);
         this.renderToolbar = this.renderToolbar.bind(this);
         this.getLayerNames = this.getLayerNames.bind(this);
+        this.handleLoggingChange = this.handleLoggingChange.bind(this);
+        this.handleExternalDataChange = this.handleExternalDataChange.bind(this);
+        this.handleGpsChange =  this.handleGpsChange.bind(this);
+        this.handleLayerControlChange = this.handleLayerControlChange.bind(this);
+        this.handleZoomMapChange = this.handleZoomMapChange.bind(this);
+        this.handleDragMapChange = this.handleDragMapChange.bind(this);
         this.layerNames = [];
         this.state = {
-            isOpenRight: false,
-            isOpenLeft: false,
+            isOpen: false,
             run: false,
-            pageName: 'Map'
+            //elements used for lifted up state of the config file
+            logging: config.app.logging,
+            externalData: config.app.externalData,
+            gps: config.app.gps,
+            layerControl: config.app.layerControl,
+            zoomable: config.map.draggable,
+            draggable: config.map.zoomable
         }
+    }
+
+    /**
+     * Handle the change of the parameter from the lower level
+     * @param {Boolean} bool value of the change 
+     */
+    handleLoggingChange(bool) {
+        this.setState({logging: bool});
+    }
+
+    /**
+     * Handle the change of the parameter from the lower level
+     * @param {Boolean} bool value of the change 
+     */
+    handleExternalDataChange(bool) {
+        this.setState({externalData: bool});
+    }
+
+    /**
+     * Handle the change of the parameter from the lower level
+     * @param {Boolean} bool value of the change 
+     */
+    handleGpsChange(bool) {
+        this.setState({gps: bool});
+    }
+
+    /**
+     * Handle the change of the parameter from the lower level
+     * @param {Boolean} bool value of the change 
+     */
+    handleLayerControlChange(bool) {
+        this.setState({layerControl: bool});
+    }
+
+    handleDragMapChange(bool) {
+        this.setState({draggable: bool});
+    }
+
+    handleZoomMapChange(bool) {
+        this.setState({zoomable: bool});
     }
 
     //disable the getLayerNames from running twice (bad hack)
@@ -50,39 +99,11 @@ class App extends React.Component {
 
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
-        if(config.app.layerControl && !window.location.href.split('/').includes('settings')) {
-            //TODO: Check for the class of the children to disable the layer menu in settings view
-            return this.toolbarWithLayer();
-        }
-        return this.toolbarNoLayers();
-    }
-
-    //rendering the toolbar with the layers menu active
-    toolbarWithLayer() {
         return (
             <Ons.Toolbar>
-                <div className='center'>{this.state.pageName}</div>
+                <div className='center'>{config.app.name}</div>
                 <div className='right'>
-                    <Ons.ToolbarButton onClick={this.showRight}>
-                        <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
-                    </Ons.ToolbarButton>
-                </div>
-                <div className='left'>
-                    <Ons.ToolbarButton onClick={this.showLeft}>
-                        <Ons.Icon icon='md-layers'></Ons.Icon>
-                    </Ons.ToolbarButton>
-                </div>
-            </Ons.Toolbar>
-        )
-    }
-
-    //render the toolbar with the layers menu disabled
-    toolbarNoLayers() {
-        return (
-            <Ons.Toolbar>
-                <div className='center'>{this.state.pageName}</div>
-                <div className='right'>
-                    <Ons.ToolbarButton onClick={this.showRight}>
+                    <Ons.ToolbarButton onClick={this.show}>
                         <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
                     </Ons.ToolbarButton>
                 </div>
@@ -91,28 +112,17 @@ class App extends React.Component {
     }
 
     //hide sidebar
-    hideRight() {
-        this.setState({isOpenRight: false});
+    hide() {
+        this.setState({isOpen: false});
     }
 
     //show sidebar
-    showRight() {
-        this.setState({isOpenRight: true});
+    show() {
+        this.setState({isOpen: true});
     }
-
-    //hide sidebar
-    hideLeft() {
-        this.setState({isOpenLeft: false});
-    }
-
-    //show sidebar
-    showLeft() {
-        this.setState({isOpenLeft: true});
-    }
-
 
     //insert rows into the sidebar, with image and name
-    renderRowRight(title, index) {
+    renderRow(title, index) {
         if(index == 0) {
             return (
                 <Link to='/' style={{ textDecoration: 'none' }} key={index}>
@@ -163,40 +173,29 @@ class App extends React.Component {
         }
     }
 
-    //render the list elements for the list of layers
-    renderRowLeft(title, index) {
-        return (
-            <Ons.ListItem 
-                key={index} 
-                tappable={true}>
-                    <div className='center'>
-                        {title}
-                    </div>
-            </Ons.ListItem>
-        )
-    }
-
     //render sidebars and toolbar
     render() {
+        //clone the children to pass properties to them
+        const {children} = this.props;
+        //the properties are the adjustable values from the config file
+        var childrenWithProps = React.Children.map(children, child => 
+            React.cloneElement(child, {onLoggingChange: this.handleLoggingChange, onDataChange: this.handleExternalDataChange, onGpsChange: this.handleGpsChange,
+                onLayerControlChange: this.handleLayerControlChange, onDragMapChange: this.handleDragMapChange, onZoomMapChange: this.handleZoomMapChange, 
+                logging: this.state.logging, data: this.state.externalData, gps: this.state.gps, layerControl: this.state.layerControl, draggable: this.state.draggable,
+                zoomable: this.state.zoomable}));
         return (
             <Ons.Splitter>
                 <Ons.SplitterSide side='right' width={'50%'} style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}} 
-                    swipable={true} collapse={true} isOpen={this.state.isOpenRight} onClose={this.hideRight} onOpen={this.showRight}>
+                    swipable={true} collapse={true} isOpen={this.state.isOpen} onClose={this.hide} onOpen={this.show}>
                     <Ons.Page>
-                        <Ons.List dataSource={['Map', 'Picture', 'Settings']} renderRow={this.renderRowRight} renderHeader={() => <Ons.ListHeader>Mode</Ons.ListHeader>} />
+                        <Ons.List dataSource={['Map', 'Picture', 'Settings']} renderRow={this.renderRow} renderHeader={() => <Ons.ListHeader>Mode</Ons.ListHeader>} />
                     </Ons.Page>
                 </Ons.SplitterSide>
                 <Ons.SplitterContent>
                 <Ons.Page renderToolbar={this.renderToolbar}>
-                    {this.props.children}
+                    {childrenWithProps}
                 </Ons.Page>
                 </Ons.SplitterContent>
-                <Ons.SplitterSide side='left' width={'50%'} style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}} 
-                    swipable={true} collapse={true} isOpen={this.state.isOpenLeft} onClose={this.hideLeft} onOpen={this.showLeft}>
-                    <Ons.Page>
-                        <Ons.List dataSource={this.getLayerNames()} renderRow={this.renderRowLeft} renderHeader={() => <Ons.ListHeader>Layers</Ons.ListHeader>} />
-                    </Ons.Page>
-                </Ons.SplitterSide>
             </Ons.Splitter>
         )
     }
