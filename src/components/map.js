@@ -47,8 +47,8 @@ class Map extends React.Component {
     //render the map with the layerControl
     render() {
         //if the layerControl is active, the map is rendered with the layercontrol
-        if(this.props.layerConrol) {
-            this.renderMapWithLayers()
+        if(this.props.layerControl) {
+            return this.renderMapWithLayers()
         }
         else {
             //return the map without any layers shown

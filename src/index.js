@@ -3,15 +3,13 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const ons = require('onsenui');
-// const Ons = require('react-onsenui');
-const Router = require('react-router-dom').Router
 //project files
-const routes = require('./routes.js');
+const app = require('./components/app.js');
 
 
 ons.ready(function() {
     ReactDOM.render(
-        <routes.Routes />,
+        <app.App />,
         document.getElementById('root')
     );
 });

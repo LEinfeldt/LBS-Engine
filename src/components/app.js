@@ -7,6 +7,9 @@ const Link = require('react-router-dom').Link;
 //custom files
 const config = require('../../www/config/config.json');
 const layers = require('../../www/config/layers.json');
+const map = require('./map.js');
+const pictureView =  require('./pictureView.js');
+const settings = require('./settings.js');
 
 
 /**
@@ -20,25 +23,28 @@ class App extends React.Component {
         this.show = this.show.bind(this);
         this.hide = this.hide.bind(this);
         this.renderToolbar = this.renderToolbar.bind(this);
-        this.getLayerNames = this.getLayerNames.bind(this);
         this.handleLoggingChange = this.handleLoggingChange.bind(this);
         this.handleExternalDataChange = this.handleExternalDataChange.bind(this);
         this.handleGpsChange =  this.handleGpsChange.bind(this);
         this.handleLayerControlChange = this.handleLayerControlChange.bind(this);
         this.handleZoomMapChange = this.handleZoomMapChange.bind(this);
         this.handleDragMapChange = this.handleDragMapChange.bind(this);
-        this.layerNames = [];
+        this.handleClickMap = this.handleClickMap.bind(this);
+        this.handleClickPicture = this.handleClickPicture.bind(this);
+        this.handleClickSettings = this.handleClickSettings.bind(this);
+        this.renderList = this.renderList.bind(this);
         this.state = {
             isOpen: false,
-            run: false,
             //elements used for lifted up state of the config file
             logging: config.app.logging,
             externalData: config.app.externalData,
             gps: config.app.gps,
             layerControl: config.app.layerControl,
             zoomable: config.map.draggable,
-            draggable: config.map.zoomable
-        }
+            draggable: config.map.zoomable,
+            index: 0
+        };
+        this.modes = ['Map', 'Picture', 'Settings'];
     }
 
     /**
@@ -81,21 +87,6 @@ class App extends React.Component {
         this.setState({zoomable: bool});
     }
 
-    //disable the getLayerNames from running twice (bad hack)
-    componentWillMount() {
-        this.getLayerNames();
-    }
-
-    // get the names of the layers from the layer.json file to insert them into the list of layers
-    getLayerNames() {
-        if(!this.state.run) {
-            for(var layer in layers) {
-                this.layerNames.push(layer);
-            }
-            this.setState({run: true});
-        }
-        return this.layerNames;
-    }
 
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
@@ -120,84 +111,111 @@ class App extends React.Component {
     show() {
         this.setState({isOpen: true});
     }
-
-    //insert rows into the sidebar, with image and name
-    renderRow(title, index) {
-        if(index == 0) {
-            return (
-                <Link to='/' style={{ textDecoration: 'none' }} key={index}>
-                    <Ons.ListItem 
-                        key={index} 
-                        tappable={true}>
-                            <div className='left'>
-                                <Ons.Icon icon='md-map'/>
-                            </div>
-                            <div className='center'>
-                                {title}
-                            </div>
-                    </Ons.ListItem>
-                </Link>
-            )
-        }
-        else if(index == 1) {
-            return (
-                <Link to='/pictureView' style={{ textDecoration: 'none' }} key={index}>
-                    <Ons.ListItem 
-                        key={index} 
-                        tappable={true}>
-                            <div className='left'>
-                                <Ons.Icon icon='md-image'/>
-                            </div>
-                            <div className='center'>
-                                {title}
-                            </div>
-                    </Ons.ListItem>
-                </Link>
-            )
-        }
-        else {
-            return (
-                <Link to='/settings' style={{ textDecoration: 'none' }} key={index}>
-                    <Ons.ListItem 
-                        key={index} 
-                        tappable={true}>
-                            <div className='left'>
-                                <Ons.Icon icon='md-settings'/>
-                            </div>
-                            <div className='center'>
-                                {title}
-                            </div>
-                    </Ons.ListItem>
-                </Link>
-            )
-        }
+    handleClickMap() {
+        this.setState({index: 0});
+    }
+    handleClickPicture() {
+        this.setState({index: 1});
+    }
+    handleClickSettings() {
+        this.setState({index: 2});
     }
 
+    renderList() {
+        return (
+            <Ons.List renderHeader={() => <Ons.ListHeader>Mode</Ons.ListHeader>} >
+                <Ons.ListItem 
+                    tappable={true}
+                    onClick={this.handleClickMap}>
+                    <div className='left'>
+                        <Ons.Icon icon='md-map'/>
+                    </div>
+                    <div className='center'>
+                        Map
+                    </div>
+                </Ons.ListItem>
+                <Ons.ListItem 
+                    tappable={true}
+                    onClick={this.handleClickPicture}>
+                        <div className='left'>
+                            <Ons.Icon icon='md-image'/>
+                        </div>
+                        <div className='center'>
+                            Picture
+                        </div>
+                </Ons.ListItem>
+                <Ons.ListItem 
+                    tappable={true}
+                    onClick={this.handleClickSettings}>
+                        <div className='left'>
+                            <Ons.Icon icon='md-settings'/>
+                        </div>
+                        <div className='center'>
+                            Settings
+                        </div>
+                </Ons.ListItem>
+            </Ons.List>
+        )
+    }
     //render sidebars and toolbar
     render() {
-        //clone the children to pass properties to them
-        const {children} = this.props;
-        //the properties are the adjustable values from the config file
-        var childrenWithProps = React.Children.map(children, child => 
-            React.cloneElement(child, {onLoggingChange: this.handleLoggingChange, onDataChange: this.handleExternalDataChange, onGpsChange: this.handleGpsChange,
-                onLayerControlChange: this.handleLayerControlChange, onDragMapChange: this.handleDragMapChange, onZoomMapChange: this.handleZoomMapChange, 
-                logging: this.state.logging, data: this.state.externalData, gps: this.state.gps, layerControl: this.state.layerControl, draggable: this.state.draggable,
-                zoomable: this.state.zoomable}));
-        return (
-            <Ons.Splitter>
+        
+        if(this.state.index == 0) {
+            return (
+                <Ons.Splitter>
                 <Ons.SplitterSide side='right' width={'50%'} style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}} 
                     swipable={true} collapse={true} isOpen={this.state.isOpen} onClose={this.hide} onOpen={this.show}>
                     <Ons.Page>
-                        <Ons.List dataSource={['Map', 'Picture', 'Settings']} renderRow={this.renderRow} renderHeader={() => <Ons.ListHeader>Mode</Ons.ListHeader>} />
+                        {this.renderList()}
                     </Ons.Page>
                 </Ons.SplitterSide>
                 <Ons.SplitterContent>
                 <Ons.Page renderToolbar={this.renderToolbar}>
-                    {childrenWithProps}
+                    <map.Map logging={this.state.logging} externalData={this.state.externalData} gps={this.state.gps} layerControl={this.state.layerControl}
+                        draggable={this.state.draggable}  zoomable={this.state.zoomable} />
                 </Ons.Page>
                 </Ons.SplitterContent>
             </Ons.Splitter>
-        )
+            )
+        }
+        else if(this.state.index == 1) {
+            return (
+                <Ons.Splitter>
+                    <Ons.SplitterSide side='right' width={'50%'} style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}} 
+                        swipable={true} collapse={true} isOpen={this.state.isOpen} onClose={this.hide} onOpen={this.show}>
+                        <Ons.Page>
+                           {this.renderList()}
+                        </Ons.Page>
+                    </Ons.SplitterSide>
+                    <Ons.SplitterContent>
+                    <Ons.Page renderToolbar={this.renderToolbar}>
+                        <pictureView.PictureView logging={this.state.logging} externalData={this.state.externalData} gps={this.state.gps} layerControl={this.state.layerControl}
+                            draggable={this.state.draggable}  zoomable={this.state.zoomable} />
+                    </Ons.Page>
+                    </Ons.SplitterContent>
+                </Ons.Splitter>
+            )
+        }
+        else {
+            return (
+                <Ons.Splitter>
+                    <Ons.SplitterSide side='right' width={'50%'} style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}} 
+                        swipable={true} collapse={true} isOpen={this.state.isOpen} onClose={this.hide} onOpen={this.show}>
+                        <Ons.Page>
+                            {this.renderList()}
+                        </Ons.Page>
+                    </Ons.SplitterSide>
+                    <Ons.SplitterContent>
+                    <Ons.Page renderToolbar={this.renderToolbar}>
+                        <settings.Settings onLoggingChange={this.handleLoggingChange} onDataChange={this.handleExternalDataChange} onGpsChange={this.handleGpsChange}
+                            onLayerControlChange={this.handleLayerControlChange} onDragMapChange={this.handleDragMapChange} onZoomMapChange={this.handleZoomMapChange}
+                            logging={this.state.logging} externalData={this.state.externalData} gps={this.state.gps} layerControl={this.state.layerControl}
+                            draggable={this.state.draggable} zoomable={this.state.zoomable}/>
+                    </Ons.Page>
+                    </Ons.SplitterContent>
+                </Ons.Splitter>
+            )
+        }
     }
 }
 
