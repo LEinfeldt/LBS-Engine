@@ -32,7 +32,8 @@ class PictureView extends React.Component {
                     <img src="../res/icon/android/icon-96-xhdpi.png"/>
                 </Ons.Row>
                 <Ons.Row style={{width: '100%', height: '50%'}}>
-                    <map.Map />
+                    <map.Map logging={this.props.logging} externalData={this.props.externalData} gps={this.props.gps} layerControl={this.props.layerControl}
+                            draggable={this.props.draggable}  zoomable={this.props.zoomable}/>
                 </Ons.Row>
             </div>
         )

@@ -2,7 +2,6 @@
 
 const React = require('react');
 const Ons = require('react-onsenui');
-const Link = require('react-router-dom').Link;
 
 //custom files
 const config = require('../../www/config/config.json');
