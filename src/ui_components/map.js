@@ -1,8 +1,8 @@
 'use strict';
 const React = require('react');
 const leaflet = require('react-leaflet');
-const config = require('../../www/config/config.json');
-const layers = require('../../www/config/layers.json');
+const config = require('../data_components/config.json');
+const layers = require('../data_components/layers.json');
 
 class Map extends React.Component {
 

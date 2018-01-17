@@ -4,8 +4,8 @@ const React = require('react');
 const Ons = require('react-onsenui');
 
 //custom files
-const config = require('../../www/config/config.json');
-const layers = require('../../www/config/layers.json');
+const config = require('../data_components/config.json');
+const layers = require('../data_components/layers.json');
 const map = require('./map.js');
 const pictureView =  require('./pictureView.js');
 const settings = require('./settings.js');

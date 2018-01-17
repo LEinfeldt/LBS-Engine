@@ -4,7 +4,7 @@ const React = require('react');
 const Ons = require('react-onsenui');
 
 //custom files
-const config = require('../../www/config/config.json');
+const config = require('../data_components/config.json');
 
 /**
  * Settings for the app. Modifys the state of the config.json 
