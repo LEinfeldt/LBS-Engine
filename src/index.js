@@ -4,7 +4,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const ons = require('onsenui');
 //project files
-const app = require('../ui_components/app.js');
+const app = require('./ui_components/app.js');
 
 
 ons.ready(function() {
