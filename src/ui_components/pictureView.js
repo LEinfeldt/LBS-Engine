@@ -26,10 +26,11 @@ class PictureView extends React.Component {
     }
 
     render() {
+        var filepath = 'img/sampleImage.jpg';
         return (
             <div className="center" style={{height: '100%'}}>
                 <Ons.Row style={{width: '100%', height: '50%'}}>
-                    <img src="../res/icon/android/icon-96-xhdpi.png"/>
+                    <img style={{display: 'block', width: '100%'}} src={filepath}/>
                 </Ons.Row>
                 <Ons.Row style={{width: '100%', height: '50%'}}>
                     <map.Map logging={this.props.logging} externalData={this.props.externalData} gps={this.props.gps} layerControl={this.props.layerControl}

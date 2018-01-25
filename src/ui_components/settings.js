@@ -5,7 +5,7 @@ const Ons = require('react-onsenui');
 
 //custom files
 const config = require('../data_components/config.json');
-const fs = require('../business_components/filewriter.js');
+const logger = require('../business_components/logger.js');
 
 /**
  * Settings for the app. Modifys the state of the config.json 
@@ -53,7 +53,7 @@ class Settings extends React.Component {
     }
 
     render() {
-        fs.logEntry("hello world");
+        logger.logEntry("hello world");
         return (
             <div>
                 <section style={{textAlign: 'center'}}>
