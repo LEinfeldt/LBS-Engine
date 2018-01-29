@@ -21,11 +21,17 @@ class Map extends React.Component {
     addLayer() {
         var mapLayers = [];
         for(let layer in layers) {
-            var markers = [];
-            for(var i = 0; i < layers[layer].items.length; i++) {
-                markers.push(<leaflet.Marker position={layers[layer].items[i].coords} key={layers[layer].items[i].name}/>)
+            var layerElement = [];
+            //check if the layer is containing markers and add those
+            if(layers[layer].type == 'marker') {
+                for(var i = 0; i < layers[layer].items.length; i++) {
+                    layerElement.push(<leaflet.Marker position={layers[layer].items[i].coords} key={layers[layer].items[i].name}/>)
+                }
             }
-            mapLayers.push(<leaflet.LayersControl.Overlay key={layer} name={layer} checked={true}><leaflet.LayerGroup key={layer}>{markers}</leaflet.LayerGroup></leaflet.LayersControl.Overlay>)
+            else if (layers[layer].type == 'route') {
+                layerElement.push(<leaflet.Polyline positions={layers[layer].coords} color='red' key={layers[layer].name} />);
+            }
+            mapLayers.push(<leaflet.LayersControl.Overlay key={layer} name={layer} checked={true}><leaflet.LayerGroup key={layer}>{layerElement}</leaflet.LayerGroup></leaflet.LayersControl.Overlay>)
         }
         return mapLayers;
     }
