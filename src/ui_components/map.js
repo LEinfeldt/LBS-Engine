@@ -4,7 +4,6 @@ const leaflet = require('react-leaflet');
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
 const locationManager = require('../business_components/locationManager.js');
-const DivIcon = require('react-leaflet-div-icon').default;
 
 class Map extends React.Component {
 
@@ -18,6 +17,7 @@ class Map extends React.Component {
             zoom: config.map.zoom,
             hasLocation: false
         }
+        //marker symbol for the "you are here" marker
         this.positionMarker = L.icon({
             iconUrl: 'img/man.png',
             iconSize: [50, 50],
@@ -26,6 +26,9 @@ class Map extends React.Component {
         });
     }
 
+    /**
+     * Insert the gps location of the user into the map, if the gps-setting is true.
+     */
     componentDidMount() {
         var that = this;
         locationManager.getLocation().then(function success(position) {

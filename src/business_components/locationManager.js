@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Get the current location from the GPS sensor
+ * Return promise with the gps data
+ */
 function getLocation() {
     
     return new Promise(function(resolve, reject) {
