@@ -9,6 +9,7 @@ const layers = require('../data_components/layers.json');
 const map = require('./map.js');
 const pictureView =  require('./pictureView.js');
 const settings = require('./settings.js');
+const embededSite = require('./embededSite.js')
 
 
 /**
@@ -28,8 +29,7 @@ class App extends React.Component {
         this.handleLayerControlChange = this.handleLayerControlChange.bind(this);
         this.handleZoomMapChange = this.handleZoomMapChange.bind(this);
         this.handleDragMapChange = this.handleDragMapChange.bind(this);
-        this.handleClickMap = this.handleClickMap.bind(this);
-        this.handleClickPicture = this.handleClickPicture.bind(this);
+        this.handleClickAbout = this.handleClickAbout.bind(this);
         this.handleClickSettings = this.handleClickSettings.bind(this);
         this.renderList = this.renderList.bind(this);
         this.renderTabs = this.renderTabs.bind(this);
@@ -97,7 +97,7 @@ class App extends React.Component {
 
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
-        const titles = ['Map', 'Streetview', 'Settings'];
+        const titles = ['Welcome to the App', 'Map', 'Streetview', 'Settings', 'About'];
         return (
             <Ons.Toolbar>
                 <div className='center'>{titles[this.state.index]}</div>
@@ -119,14 +119,15 @@ class App extends React.Component {
     show() {
         this.setState({isOpen: true});
     }
-    handleClickMap() {
-        this.setState({index: 0});
-    }
-    handleClickPicture() {
-        this.setState({index: 1});
-    }
+
+    //handle a click o settings --> change state
     handleClickSettings() {
-        this.setState({index: 2});
+        this.setState({index: 3});
+    }
+
+    //handle a click o about --> change state
+    handleClickAbout() {
+        this.setState({index: 4});
     }
 
     /**
@@ -135,6 +136,11 @@ class App extends React.Component {
      */
     renderTabs() {
         return [
+            //Welcome page iframe 
+            {
+                content: <embededSite.EmbededComponent site='https://www.uni-muenster.de/Geoinformatics/en/' />,
+                tab: <Ons.Tab label='Embed' icon='md-settings' key='embeded' style={{display: 'none'}}/>
+            },
             //map element
             {
                 content: <map.Map 
@@ -177,6 +183,11 @@ class App extends React.Component {
                                 key='settings' />,
                 tab: <Ons.Tab label='Settings' icon='md-settings' key='settings' style={{display: 'none'}}/>
             },
+            //about page iframe 
+            {
+                content: <embededSite.EmbededComponent site='http://uni-muenster.de' />,
+                tab: <Ons.Tab label='Embed' icon='md-settings' key='embeded' style={{display: 'none'}}/>
+            },
             //ship  around an error in current onsen release
             {
                 content: <div key='placeholder' />,
@@ -197,6 +208,16 @@ class App extends React.Component {
                         </div>
                         <div className='center'>
                             Settings
+                        </div>
+                </Ons.ListItem>
+                <Ons.ListItem 
+                    tappable={true}
+                    onClick={this.handleClickAbout}>
+                        <div className='left'>
+                            <Ons.Icon icon='md-info'/>
+                        </div>
+                        <div className='center'>
+                            About
                         </div>
                 </Ons.ListItem>
             </Ons.List>
