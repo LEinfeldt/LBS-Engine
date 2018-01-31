@@ -20,7 +20,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import autoStyle from '../ons/autostyle';
 import ModifierUtil from '../ons/internal/modifier-util';
@@ -34,7 +34,7 @@ var scheme = {
   '.progress-circular__secondary': 'progress-circular--*__secondary'
 };
 
-var template = util.createElement('\n  <svg class="progress-circular">\n    <circle class="progress-circular__background" />\n    <circle class="progress-circular__secondary" />\n    <circle class="progress-circular__primary" />\n  </svg>\n');
+var template = util.createElement('\n  <svg class="progress-circular">\n    <circle class="progress-circular__background" />\n    <circle class="progress-circular__secondary" cx="50%" cy="50%" r="40%" />\n    <circle class="progress-circular__primary" cx="50%" cy="50%" r="40%" />\n  </svg>\n');
 
 var INDET = 'indeterminate';
 
@@ -266,5 +266,5 @@ var ProgressCircularElement = function (_BaseElement) {
 export default ProgressCircularElement;
 
 
-ons.elements.ProgressCircular = ProgressCircularElement;
+onsElements.ProgressCircular = ProgressCircularElement;
 customElements.define('ons-progress-circular', ProgressCircularElement);

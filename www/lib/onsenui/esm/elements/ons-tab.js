@@ -22,7 +22,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import autoStyle from '../ons/autostyle';
 import ModifierUtil from '../ons/internal/modifier-util';
@@ -77,13 +77,13 @@ var scheme = {
  *   </ons-tab>
  * </ons-tabbar>
  *
- * <ons-template id="home.html">
+ * <template id="home.html">
  *   ...
- * </ons-template>
+ * </template>
  *
- * <ons-template id="settings.html">
+ * <template id="settings.html">
  *   ...
- * </ons-template>
+ * </template>
 
  */
 
@@ -157,7 +157,7 @@ var TabElement = function (_BaseElement) {
     }
 
     _this._pageLoader = defaultPageLoader;
-    _this._boundOnClick = _this._onClick.bind(_this);
+    _this._onClick = _this._onClick.bind(_this);
     return _this;
   }
 
@@ -257,8 +257,18 @@ var TabElement = function (_BaseElement) {
       var _this3 = this;
 
       this._hasLoaded = true;
+
       return new _Promise(function (resolve) {
         _this3._pageLoader.load({ parent: parent, page: page }, function (pageElement) {
+
+          if (!_this3.isActive()) {
+            // Perf, fixes #2324 when active tab is 0
+            pageElement.style.visibility = 'hidden';
+            _this3._tabbar._loadInactive.promise.then(function () {
+              return pageElement.style.visibility = '';
+            });
+          }
+
           parent.replaceChild(pageElement, parent.children[_this3.index]); // Ensure position
           _this3._loadedPage = pageElement;
           resolve(pageElement);
@@ -278,18 +288,20 @@ var TabElement = function (_BaseElement) {
   }, {
     key: 'disconnectedCallback',
     value: function disconnectedCallback() {
-      this.loaded = null;
-      this.removeEventListener('click', this._boundOnClick, false);
+      this.removeEventListener('click', this._onClick, false);
       if (this._loadedPage) {
         this._pageLoader.unload(this._loadedPage);
         this._loadedPage = null;
         this._hasLoaded = false;
+        this.loaded = null;
       }
     }
   }, {
     key: 'connectedCallback',
     value: function connectedCallback() {
       var _this4 = this;
+
+      this.addEventListener('click', this._onClick, false);
 
       if (!util.isAttached(this) || this.loaded) {
         return; // ons-tabbar compilation may trigger this
@@ -326,7 +338,7 @@ var TabElement = function (_BaseElement) {
             var pageTarget = _this4.page || _this4.getAttribute('page');
             if (!_this4.pageElement && pageTarget) {
               var parentTarget = tabbar._targetElement;
-              var dummyPage = util.create('div', { height: '100%', width: '100%', backgroundColor: 'transparent' });
+              var dummyPage = util.create('div', { height: '100%', width: '100%', visibility: 'hidden' });
               parentTarget.insertBefore(dummyPage, parentTarget.children[index]); // Ensure position
               return _this4._loadPageElement(parentTarget, pageTarget).then(deferred.resolve);
             }
@@ -334,8 +346,6 @@ var TabElement = function (_BaseElement) {
             return deferred.resolve(_this4.pageElement);
           });
         }
-
-        _this4.addEventListener('click', _this4._boundOnClick, false);
       });
     }
   }, {
@@ -433,5 +443,5 @@ var TabElement = function (_BaseElement) {
 export default TabElement;
 
 
-ons.elements.Tab = TabElement;
+onsElements.Tab = TabElement;
 customElements.define('ons-tab', TabElement);

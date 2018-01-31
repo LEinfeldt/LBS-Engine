@@ -20,18 +20,8 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
-import util from '../ons/util';
-import autoStyle from '../ons/autostyle';
-import contentReady from '../ons/content-ready';
-import ModifierUtil from '../ons/internal/modifier-util';
-import BaseElement from './base/base-element';
-
-var defaultClassName = 'action-sheet-button';
-var scheme = {
-  '': 'action-sheet-button--*',
-  '.action-sheet-icon': 'action-sheet-icon--*'
-};
+import onsElements from '../ons/elements';
+import BaseButtonElement from './base/base-button';
 
 /**
  * @element ons-action-sheet-button
@@ -68,89 +58,58 @@ var scheme = {
  * </script>
  */
 
-var ActionSheetButtonElement = function (_BaseElement) {
-  _inherits(ActionSheetButtonElement, _BaseElement);
-
-  /**
-   * @attribute icon
-   * @type {String}
-   * @description
-   *  [en]Creates an `ons-icon` component with this string. Only visible on Android. Check [See also](#seealso) section for more information.[/en]
-   *  [ja]`ons-icon`コンポーネントを悪性します。Androidでのみ表示されます。[/ja]
-   */
-
-  /**
-   * @attribute modifier
-   * @type {String}
-   * @description
-   *   [en]The appearance of the action sheet button.[/en]
-   *   [ja]アクションシートボタンの見た目を設定します。[/ja]
-   */
+var ActionSheetButtonElement = function (_BaseButtonElement) {
+  _inherits(ActionSheetButtonElement, _BaseButtonElement);
 
   function ActionSheetButtonElement() {
     _classCallCheck(this, ActionSheetButtonElement);
 
-    var _this = _possibleConstructorReturn(this, (ActionSheetButtonElement.__proto__ || _Object$getPrototypeOf(ActionSheetButtonElement)).call(this));
-
-    contentReady(_this, function () {
-      return _this._compile();
-    });
-    return _this;
+    return _possibleConstructorReturn(this, (ActionSheetButtonElement.__proto__ || _Object$getPrototypeOf(ActionSheetButtonElement)).apply(this, arguments));
   }
 
   _createClass(ActionSheetButtonElement, [{
-    key: '_compile',
-    value: function _compile() {
-      autoStyle.prepare(this);
-      this.classList.add(defaultClassName);
+    key: '_scheme',
 
-      if (!this._icon && this.hasAttribute('icon')) {
-        var icon = util.createElement('<ons-icon icon="' + this.getAttribute('icon') + '"></ons-icon>');
-        icon.classList.add('action-sheet-icon');
-        this.insertBefore(icon, this.firstChild);
-      }
 
-      ModifierUtil.initModifier(this, scheme);
-    }
-  }, {
-    key: '_updateIcon',
-    value: function _updateIcon() {
-      if (this._icon) {
-        this._icon.setAttribute('icon', this.getAttribute('icon'));
-      }
-    }
-  }, {
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      switch (name) {
-        case 'class':
-          util.restoreClass(this, defaultClassName, scheme);
-          break;
-        case 'modifier':
-          ModifierUtil.onModifierChanged(last, current, this, scheme);
-          break;
-        case 'icon':
-          this._updateIcon();
-          break;
-      }
-    }
-  }, {
-    key: '_icon',
+    /**
+     * @attribute icon
+     * @type {String}
+     * @description
+     *  [en]Creates an `ons-icon` component with this string. Only visible on Android. Check [See also](#seealso) section for more information.[/en]
+     *  [ja]`ons-icon`コンポーネントを悪性します。Androidでのみ表示されます。[/ja]
+     */
+
+    /**
+     * @attribute modifier
+     * @type {String}
+     * @description
+     *   [en]The appearance of the action sheet button.[/en]
+     *   [ja]アクションシートボタンの見た目を設定します。[/ja]
+     */
+
     get: function get() {
-      return util.findChild(this, '.action-sheet-icon');
+      return {
+        '': 'action-sheet-button--*',
+        '.action-sheet-icon': 'action-sheet-icon--*'
+      };
     }
-  }], [{
-    key: 'observedAttributes',
+  }, {
+    key: '_defaultClassName',
     get: function get() {
-      return ['modifier', 'class', 'icon'];
+      return 'action-sheet-button';
+    }
+  }, {
+    key: '_rippleOpt',
+    get: function get() {
+      return undefined;
     }
   }]);
 
   return ActionSheetButtonElement;
-}(BaseElement);
+}(BaseButtonElement);
 
 export default ActionSheetButtonElement;
 
 
-ons.elements.ActionSheetButton = ActionSheetButtonElement;
+onsElements.ActionSheetButton = ActionSheetButtonElement;
 customElements.define('ons-action-sheet-button', ActionSheetButtonElement);

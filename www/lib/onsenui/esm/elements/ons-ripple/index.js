@@ -20,7 +20,7 @@ limitations under the License.
 
 */
 
-import ons from '../../ons';
+import onsElements from '../../ons/elements';
 import util from '../../ons/util';
 import internal from '../../ons/internal';
 import BaseElement from '../base/base-element';
@@ -116,6 +116,11 @@ var RippleElement = function (_BaseElement) {
     _classCallCheck(this, RippleElement);
 
     var _this = _possibleConstructorReturn(this, (RippleElement.__proto__ || _Object$getPrototypeOf(RippleElement)).call(this));
+
+    _this._onTap = _this._onTap.bind(_this);
+    _this._onHold = _this._onHold.bind(_this);
+    _this._onDragStart = _this._onDragStart.bind(_this);
+    _this._onRelease = _this._onRelease.bind(_this);
 
     contentReady(_this, function () {
       return _this._compile();
@@ -247,7 +252,8 @@ var RippleElement = function (_BaseElement) {
     value: function _onTap(e) {
       var _this2 = this;
 
-      if (!this.disabled) {
+      if (!this.disabled && !e.ripple) {
+        e.ripple = true;
         this._updateParent();
         this._rippleAnimation(e.gesture.srcEvent).then(function () {
           _this2._animator.fade(_this2._wave);
@@ -258,10 +264,11 @@ var RippleElement = function (_BaseElement) {
   }, {
     key: '_onHold',
     value: function _onHold(e) {
-      if (!this.disabled) {
+      if (!this.disabled && !e.ripple) {
+        e.ripple = true;
         this._updateParent();
         this._holding = this._rippleAnimation(e.gesture.srcEvent, 2000);
-        document.addEventListener('release', this._boundOnRelease);
+        document.addEventListener('release', this._onRelease);
       }
     }
   }, {
@@ -269,7 +276,8 @@ var RippleElement = function (_BaseElement) {
     value: function _onRelease(e) {
       var _this3 = this;
 
-      if (this._holding) {
+      if (this._holding && !e.ripple) {
+        e.ripple = true;
         this._holding.speed(300).then(function () {
           _this3._animator.stopAll({ stopNext: true });
           _this3._animator.fade(_this3._wave);
@@ -279,7 +287,7 @@ var RippleElement = function (_BaseElement) {
         this._holding = false;
       }
 
-      document.removeEventListener('release', this._boundOnRelease);
+      document.removeEventListener('release', this._onRelease);
     }
   }, {
     key: '_onDragStart',
@@ -295,26 +303,22 @@ var RippleElement = function (_BaseElement) {
     key: 'connectedCallback',
     value: function connectedCallback() {
       this._parentNode = this.parentNode;
-      this._boundOnTap = this._onTap.bind(this);
-      this._boundOnHold = this._onHold.bind(this);
-      this._boundOnDragStart = this._onDragStart.bind(this);
-      this._boundOnRelease = this._onRelease.bind(this);
 
       if (internal.config.animationsDisabled) {
         this.disabled = true;
       } else {
-        this._parentNode.addEventListener('tap', this._boundOnTap);
-        this._parentNode.addEventListener('hold', this._boundOnHold);
-        this._parentNode.addEventListener('dragstart', this._boundOnDragStart);
+        this._parentNode.addEventListener('tap', this._onTap);
+        this._parentNode.addEventListener('hold', this._onHold);
+        this._parentNode.addEventListener('dragstart', this._onDragStart);
       }
     }
   }, {
     key: 'disconnectedCallback',
     value: function disconnectedCallback() {
       var pn = this._parentNode || this.parentNode;
-      pn.removeEventListener('tap', this._boundOnTap);
-      pn.removeEventListener('hold', this._boundOnHold);
-      pn.removeEventListener('dragstart', this._boundOnDragStart);
+      pn.removeEventListener('tap', this._onTap);
+      pn.removeEventListener('hold', this._onHold);
+      pn.removeEventListener('dragstart', this._onDragStart);
     }
   }, {
     key: 'attributeChangedCallback',
@@ -402,5 +406,5 @@ var RippleElement = function (_BaseElement) {
 export default RippleElement;
 
 
-ons.elements.Ripple = RippleElement;
+onsElements.Ripple = RippleElement;
 customElements.define('ons-ripple', RippleElement);

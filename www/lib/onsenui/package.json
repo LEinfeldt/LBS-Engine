@@ -1,19 +1,19 @@
 {
   "_args": [
     [
-      "onsenui",
+      "onsenui@2.9.1",
       "/home/lasse/Documents/Arbeit/LBS-Engine"
     ]
   ],
-  "_from": "onsenui@latest",
-  "_id": "onsenui@2.8.2",
+  "_from": "onsenui@2.9.1",
+  "_id": "onsenui@2.9.1",
   "_inCache": true,
   "_installable": true,
   "_location": "/onsenui",
   "_nodeVersion": "8.8.1",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/onsenui-2.8.2.tgz_1511343107625_0.6821053510066122"
+    "tmp": "tmp/onsenui-2.9.1.tgz_1516957214637_0.35274900612421334"
   },
   "_npmUser": {
     "email": "me@frandiox.com",
@@ -23,19 +23,19 @@
   "_phantomChildren": {},
   "_requested": {
     "name": "onsenui",
-    "raw": "onsenui",
-    "rawSpec": "",
+    "raw": "onsenui@2.9.1",
+    "rawSpec": "2.9.1",
     "scope": null,
-    "spec": "latest",
-    "type": "tag"
+    "spec": "2.9.1",
+    "type": "version"
   },
   "_requiredBy": [
-    "#DEV:/"
+    "/"
   ],
-  "_resolved": "https://registry.npmjs.org/onsenui/-/onsenui-2.8.2.tgz",
-  "_shasum": "e1311e8831fbeb84b1be91f641c604bb3fc48600",
+  "_resolved": "https://registry.npmjs.org/onsenui/-/onsenui-2.9.1.tgz",
+  "_shasum": "08db80f96eb773ca4544161a8bee9a289f8f1cac",
   "_shrinkwrap": null,
-  "_spec": "onsenui",
+  "_spec": "onsenui@2.9.1",
   "_where": "/home/lasse/Documents/Arbeit/LBS-Engine",
   "author": {
     "name": "@kruyvanna"
@@ -81,6 +81,7 @@
   ],
   "dependencies": {
     "@onsenui/custom-elements": "1.0.0",
+    "@onsenui/fastclick": "^1.1.0",
     "core-js": "^2.5.1"
   },
   "description": "HTML5 Mobile Framework & UI Components",
@@ -154,9 +155,9 @@
   },
   "directories": {},
   "dist": {
-    "integrity": "sha512-U712eTrTFfM7yKhguaTYkb/pT5OyfaLEDAzwxxdkLAysAGfC2GyMlYPJMi2J5hyKqjA7Krb3N7I2ExkAfIefZA==",
-    "shasum": "e1311e8831fbeb84b1be91f641c604bb3fc48600",
-    "tarball": "https://registry.npmjs.org/onsenui/-/onsenui-2.8.2.tgz"
+    "integrity": "sha512-0dyMq+Opd+deN4roc509DVFiPEPNR7wyHz+HYofArqafvARkR6iFn8COsHICP2G6bVQOtZyYIC3bFY2Q5p88nA==",
+    "shasum": "08db80f96eb773ca4544161a8bee9a289f8f1cac",
+    "tarball": "https://registry.npmjs.org/onsenui/-/onsenui-2.9.1.tgz"
   },
   "engines": {
     "node": ">= 4.0.0"
@@ -168,7 +169,7 @@
     "esm",
     "js"
   ],
-  "gitHead": "a94393c27d9db7b7d0e0b437321b08ce69e11d00",
+  "gitHead": "defb57967c33c9e8450596cc87e67bc0aef55ac1",
   "homepage": "https://onsen.io/",
   "keywords": [
     "angular",
@@ -194,12 +195,12 @@
   "main": "js/onsenui.js",
   "maintainers": [
     {
-      "name": "anatoo",
-      "email": "anatoo.jp@gmail.com"
+      "name": "onsenui",
+      "email": "onsenui@gmail.com"
     },
     {
-      "name": "argelius",
-      "email": "andreas@argeli.us"
+      "name": "asialgearoid",
+      "email": "gearoid@asial.co.jp"
     },
     {
       "name": "asial-matagawa",
@@ -225,5 +226,5 @@
     "test:skip-build": "gulp test --disable-warnings --skip-build"
   },
   "typings": "js/onsenui.d.ts",
-  "version": "2.8.2"
+  "version": "2.9.1"
 }

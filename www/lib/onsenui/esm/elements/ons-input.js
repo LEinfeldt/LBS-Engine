@@ -18,7 +18,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import BaseInputElement from './base/base-input';
 import contentReady from '../ons/content-ready';
 import util from '../ons/util';
@@ -245,5 +245,5 @@ var InputElement = function (_BaseInputElement) {
 export default InputElement;
 
 
-ons.elements.Input = InputElement;
+onsElements.Input = InputElement;
 customElements.define('ons-input', InputElement);

@@ -20,7 +20,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import autoStyle from '../ons/autostyle';
 import ModifierUtil from '../ons/internal/modifier-util';
@@ -112,5 +112,5 @@ var ListElement = function (_BaseElement) {
 export default ListElement;
 
 
-ons.elements.List = ListElement;
+onsElements.List = ListElement;
 customElements.define('ons-list', ListElement);

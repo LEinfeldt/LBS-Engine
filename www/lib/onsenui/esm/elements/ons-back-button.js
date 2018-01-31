@@ -20,7 +20,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import autoStyle from '../ons/autostyle';
 import ModifierUtil from '../ons/internal/modifier-util';
@@ -241,5 +241,5 @@ var BackButtonElement = function (_BaseElement) {
 export default BackButtonElement;
 
 
-ons.elements.BackButton = BackButtonElement;
+onsElements.BackButton = BackButtonElement;
 customElements.define('ons-back-button', BackButtonElement);

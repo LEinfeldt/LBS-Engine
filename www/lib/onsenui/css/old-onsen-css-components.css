@@ -802,7 +802,7 @@ h4, h5, h6 {
   background-position: bottom;
   background-image: linear-gradient(0deg, #bbb, #bbb 100%);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .toolbar {
     background-image: linear-gradient(0deg, #bbb, #bbb 50%, transparent 50%);
   }
@@ -979,7 +979,7 @@ h4, h5, h6 {
   background-position: top;
   background-image: linear-gradient(180deg, #bbb, #bbb 100%);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .bottom-bar {
     background-image: linear-gradient(180deg, #bbb, #bbb 50%, transparent 50%);
   }
@@ -1877,18 +1877,18 @@ h4, h5, h6 {
   category: Segment
   markup: |
     <div class="segment" style="width: 280px; margin: 0 auto;">
-      <button class="segment__item">
+      <div class="segment__item">
         <input type="radio" class="segment__input" name="segment-a" checked>
         <div class="segment__button">One</div>
-      </button>
-      <button class="segment__item">
+      </div>
+      <div class="segment__item">
         <input type="radio" class="segment__input" name="segment-a">
         <div class="segment__button">Two</div>
-      </button>
-      <button class="segment__item">
+      </div>
+      <div class="segment__item">
         <input type="radio" class="segment__input" name="segment-a">
         <div class="segment__button">Three</div>
-      </button>
+      </div>
     </div>
 */
 .segment {
@@ -2007,18 +2007,18 @@ h4, h5, h6 {
   category: Segment
   markup: |
     <div class="segment segment--material" style="width: 280px; margin: 0 auto;">
-      <button class="segment__item segment--material__item">
+      <div class="segment__item segment--material__item">
         <input type="radio" class="segment__input segment--material__input" name="segment-b" checked>
         <div class="segment__button segment--material__button">One</div>
-      </button>
-      <button class="segment__item segment--material__item">
+      </div>
+      <div class="segment__item segment--material__item">
         <input type="radio" class="segment__input segment--material__input" name="segment-b">
         <div class="segment__button segment--material__button">Two</div>
-      </button>
-      <button class="segment__item segment--material__item">
+      </div>
+      <div class="segment__item segment--material__item">
         <input type="radio" class="segment__input segment--material__input" name="segment-b">
         <div class="segment__button segment--material__button">Three</div>
-      </button>
+      </div>
     </div>
 */
 .segment--material {
@@ -2139,7 +2139,7 @@ h4, h5, h6 {
   border-top: 1px solid #ccc;
   width: 100%;
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .tabbar {
     border-top: none;
     background-size: 100% 1px;
@@ -2217,7 +2217,7 @@ h4, h5, h6 {
   font-weight: 400;
   line-height: 49px;
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .tabbar__button {
     border-top: none;
   }
@@ -2235,17 +2235,26 @@ h4, h5, h6 {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 400;
+  display: inline-block;
 }
-.tabbar__badge.notification { /* FIXME */
-  position: absolute;
-  top: 5px;
+.tabbar__badge.notification {
+  vertical-align: text-bottom;
+  top: -1px;
+  margin-left: 5px;
   z-index: 10;
   font-size: 12px;
   height: 16px;
+  min-width: 16px;
   line-height: 16px;
   border-radius: 8px;
 }
+.tabbar__icon ~ .tabbar__badge.notification {
+  position: absolute;
+  top: 5px;
+  margin-left: 0;
+}
 .tabbar__icon + .tabbar__label {
+  display: block;
   font-size: 10px;
   line-height: 1;
   margin: 0;
@@ -2353,7 +2362,7 @@ h4, h5, h6 {
   border-top: none;
   border-bottom: 1px solid #ccc;
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .tabbar--top {
     border-bottom: none;
     background-size: 100% 1px;
@@ -3243,7 +3252,7 @@ h4, h5, h6 {
     </label>
 */
 .radio-button--material {
-  line-height: 20px + 2px;
+  line-height: 22px;
   font-family: 'Roboto', 'Noto', sans-serif;
   -webkit-font-smoothing: antialiased;
   font-weight: 400;
@@ -3379,7 +3388,7 @@ h4, h5, h6 {
   border: none;
   background-color: #fff;
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .list {
     background-image:
       linear-gradient(0deg, #ccc, #ccc 50%, transparent 50%),
@@ -3462,7 +3471,7 @@ h4, h5, h6 {
   background-position: bottom;
   background-image: linear-gradient(0deg, #ccc, #ccc 100%);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .list-item__center {
     background-image: linear-gradient(0deg, #ccc, #ccc 50%, transparent 50%);
   }
@@ -3493,7 +3502,7 @@ h4, h5, h6 {
   background-position: bottom;
   background-image: linear-gradient(0deg, #ccc, #ccc 100%);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .list-item__right {
     background-image: linear-gradient(0deg, #ccc, #ccc 50%, transparent 50%);
   }
@@ -3522,7 +3531,7 @@ h4, h5, h6 {
   background-position: top;
   background-image: linear-gradient(0deg, #ccc, #ccc 100%);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .list-header {
     background-image: linear-gradient(180deg, #ccc, #ccc 50%, transparent 50%);
   }
@@ -3829,7 +3838,7 @@ h4, h5, h6 {
     <ul class="list">
       <li class="list-item">
         <div class="list-item__left">
-          <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40" alt="Cute kitten">
+          <img class="list-item__thumbnail" src="https://placekitten.com/g/40/40" alt="Cute kitten">
         </div>
 
         <div class="list-item__center">
@@ -3840,7 +3849,7 @@ h4, h5, h6 {
 
       <li class="list-item">
         <div class="list-item__left">
-          <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40" alt="Cute kitten">
+          <img class="list-item__thumbnail" src="https://placekitten.com/g/40/40" alt="Cute kitten">
         </div>
 
         <div class="list-item__center">
@@ -3952,7 +3961,7 @@ h4, h5, h6 {
   background-position: bottom;
   background-image: linear-gradient(0deg, #eee, #eee 100%);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .list-item--material__left:empty,
 .list-item--material__center {
     background-image: linear-gradient(0deg, #eee, #eee 50%, transparent 50%);
@@ -3972,7 +3981,7 @@ h4, h5, h6 {
   background-position: bottom;
   background-image: linear-gradient(0deg, #eee, #eee 100%);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .list-item--material__right {
     background-image: linear-gradient(0deg, #eee, #eee 50%, transparent 50%);
   }
@@ -3988,7 +3997,7 @@ h4, h5, h6 {
   background-position: bottom;
   background-image: linear-gradient(0deg, #eee, #eee 100%);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .list-item--material.list-item--longdivider {
     background-image: linear-gradient(0deg, #eee, #eee 50%, transparent 50%);
   }
@@ -4027,7 +4036,7 @@ h4, h5, h6 {
   background-position: top;
   background-image: linear-gradient(180deg, #eee, #eee 100%);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .list-header--material:not(:first-of-type) {
     background-image: linear-gradient(180deg, #eee, #eee 50%, transparent 50%);
   }
@@ -4078,7 +4087,7 @@ h4, h5, h6 {
     <ul class="list list--material">
       <li class="list-item list-item--material">
         <div class="list-item__left list-item--material__left">
-          <img class="list-item__thumbnail list-item--material__thumbnail" src="http://placekitten.com/g/42/41" alt="Cute kitten">
+          <img class="list-item__thumbnail list-item--material__thumbnail" src="https://placekitten.com/g/42/41" alt="Cute kitten">
         </div>
 
         <div class="list-item__center list-item--material__center">
@@ -4089,7 +4098,7 @@ h4, h5, h6 {
 
       <li class="list-item list-item--material">
         <div class="list-item__left list-item--material__left">
-          <img class="list-item__thumbnail list-item--material__thumbnail" src="http://placekitten.com/g/40/40" alt="Cute kitten">
+          <img class="list-item__thumbnail list-item--material__thumbnail" src="https://placekitten.com/g/40/40" alt="Cute kitten">
         </div>
 
         <div class="list-item__center list-item--material__center">
@@ -4235,7 +4244,7 @@ h4, h5, h6 {
   background-position: bottom;
   background-image: linear-gradient(0deg, #ccc, #ccc 100%);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .list-item--longdivider {
     background-image: linear-gradient(0deg, #ccc, #ccc 50%, transparent 50%);
   }
@@ -5026,7 +5035,7 @@ h4, h5, h6 {
   outline: none;
   color: rgba(24, 103, 194, .81);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .alert-dialog-button {
     border-top: none;
     background-size: 100% 1px;
@@ -5057,7 +5066,7 @@ h4, h5, h6 {
   width: 100%;
   border-left: 1px solid #ddd;
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .alert-dialog-button--rowfooter {
     border-top: none;
     border-left: none;
@@ -5072,7 +5081,7 @@ h4, h5, h6 {
 .alert-dialog-button--rowfooter:first-child {
   border-left: none;
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .alert-dialog-button--rowfooter:first-child {
     border-top: none;
     background-size: 100% 1px;
@@ -5245,7 +5254,7 @@ h4, h5, h6 {
   min-width: 50px;
   color: #009688;
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .alert-dialog-button--material {
     background: none;
   }
@@ -5259,7 +5268,7 @@ h4, h5, h6 {
 .alert-dialog-button--rowfooter--material:first-child { /* stylelint-enable */
   border: 0;
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .alert-dialog-button--rowfooter--material,
 .alert-dialog-button--rowfooter--material:first-child {
     background: none;
@@ -5269,7 +5278,7 @@ h4, h5, h6 {
 .alert-dialog-button--primal--material { /* stylelint-enable */
   font-weight: 500;
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .alert-dialog-button--primal--material {
     background: none;
   }
@@ -6402,7 +6411,7 @@ h4, h5, h6 {
   background-position: bottom;
   background-image: linear-gradient(0deg, rgba(0, 0, 0, .1), rgba(0, 0, 0, .1) 100%);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .action-sheet-button {
     background-image: linear-gradient(0deg, rgba(0, 0, 0, .1), rgba(0, 0, 0, .1) 50%, transparent 50%);
   }
@@ -6452,7 +6461,7 @@ h4, h5, h6 {
   background-position: bottom;
   background-image: linear-gradient(0deg, rgba(0, 0, 0, .1), rgba(0, 0, 0, .1) 100%);
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
   .action-sheet-title {
     background-image: linear-gradient(0deg, rgba(0, 0, 0, .1), rgba(0, 0, 0, .1) 50%, transparent 50%);
   }

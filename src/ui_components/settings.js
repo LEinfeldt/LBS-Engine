@@ -8,7 +8,7 @@ const config = require('../data_components/config.json');
 const logger = require('../business_components/logger.js');
 
 /**
- * Settings for the app. Modifys the state of the config.json 
+ * Settings for the app. Modifys the state of the settings
  */
 class Settings extends React.Component {
 

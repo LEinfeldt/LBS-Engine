@@ -20,7 +20,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import styler from '../ons/styler';
 import BaseElement from './base/base-element';
 
@@ -110,5 +110,5 @@ var ColElement = function (_BaseElement) {
 export default ColElement;
 
 
-ons.elements.Col = ColElement;
+onsElements.Col = ColElement;
 customElements.define('ons-col', ColElement);

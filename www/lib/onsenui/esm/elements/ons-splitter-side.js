@@ -22,7 +22,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import AnimatorFactory from '../ons/internal/animator-factory';
 import orientation from '../ons/orientation';
@@ -30,7 +30,6 @@ import internal from '../ons/internal';
 import ModifierUtil from '../ons/internal/modifier-util';
 import BaseElement from './base/base-element';
 import SplitterAnimator from './ons-splitter/animator';
-import GestureDetector from '../ons/gesture-detector';
 import SwipeReveal from '../ons/internal/swipe-reveal';
 import DoorLock from '../ons/doorlock';
 import contentReady from '../ons/content-ready';
@@ -615,6 +614,7 @@ var SplitterSideElement = function (_BaseElement) {
 
       return new _Promise(function (resolve) {
         _this4._animator[action](function () {
+          util.iosPageScrollFix(shouldOpen);
           _this4._state = FINAL_STATE;
           unlock();
           _this4._emitEvent('post' + action);
@@ -628,8 +628,8 @@ var SplitterSideElement = function (_BaseElement) {
      * @method load
      * @signature load(page, [options])
      * @param {String} page
-     *   [en]Page URL. Can be either an HTML document or an <ons-template>.[/en]
-     *   [ja]pageのURLか、ons-templateで宣言したテンプレートのid属性の値を指定します。[/ja]
+     *   [en]Page URL. Can be either an HTML document or a `<template>`.[/en]
+     *   [ja]pageのURLか、`<template>`で宣言したテンプレートのid属性の値を指定します。[/ja]
      * @param {Object} [options]
      * @param {Function} [options.callback]
      * @description
@@ -805,5 +805,5 @@ var SplitterSideElement = function (_BaseElement) {
 export default SplitterSideElement;
 
 
-ons.elements.SplitterSide = SplitterSideElement;
+onsElements.SplitterSide = SplitterSideElement;
 customElements.define('ons-splitter-side', SplitterSideElement);

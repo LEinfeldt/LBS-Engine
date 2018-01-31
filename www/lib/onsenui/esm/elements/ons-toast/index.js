@@ -20,7 +20,7 @@ limitations under the License.
 
 */
 
-import ons from '../../ons';
+import onsElements from '../../ons/elements';
 import util from '../../ons/util';
 import autoStyle from '../../ons/autostyle';
 import ModifierUtil from '../../ons/internal/modifier-util';
@@ -284,5 +284,5 @@ var ToastElement = function (_BaseDialogElement) {
 export default ToastElement;
 
 
-ons.elements.Toast = ToastElement;
+onsElements.Toast = ToastElement;
 customElements.define('ons-toast', ToastElement);

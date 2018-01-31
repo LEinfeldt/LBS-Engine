@@ -23,7 +23,7 @@ limitations under the License.
 
 */
 
-import ons from '../../ons';
+import onsElements from '../../ons/elements';
 import util from '../../ons/util';
 import internal from '../../ons/internal';
 import autoStyle from '../../ons/autostyle';
@@ -93,13 +93,13 @@ var lerp = function lerp(x0, x1, t) {
  *   </ons-tab>
  * </ons-tabbar>
  *
- * <ons-template id="home.html">
+ * <template id="home.html">
  *   ...
- * </ons-template>
+ * </template>
  *
- * <ons-template id="settings.html">
+ * <template id="settings.html">
  *   ...
- * </ons-template>
+ * </template>
  */
 
 var TabbarElement = function (_BaseElement) {
@@ -229,6 +229,7 @@ var TabbarElement = function (_BaseElement) {
     contentReady(_this, function () {
       return _this._compile();
     });
+    _this._loadInactive = util.defer(); // Improves #2324
     return _this;
   }
 
@@ -268,7 +269,13 @@ var TabbarElement = function (_BaseElement) {
       }
 
       contentReady(this, function () {
-        return _this2._updatePosition();
+        _this2._updatePosition();
+
+        if (!util.findParent(_this2, 'ons-page', function (p) {
+          return p === document.body;
+        })) {
+          _this2._show(); // This tabbar is the top component
+        }
       });
     }
   }, {
@@ -555,7 +562,9 @@ var TabbarElement = function (_BaseElement) {
      *   [ja]現在アクティブになっているタブのインデックスを返します。現在アクティブなタブがない場合には-1を返します。[/ja]
      */
     value: function getActiveTabIndex() {
-      for (var tabs = this.tabs, i = 0; i < tabs.length; i++) {
+      var tabs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.tabs;
+
+      for (var i = 0; i < tabs.length; i++) {
         if (tabs[i] && tabs[i].tagName === 'ONS-TAB' && tabs[i].isActive()) {
           return i;
         }
@@ -568,12 +577,18 @@ var TabbarElement = function (_BaseElement) {
       var _this6 = this;
 
       this._swiper.show();
+
       _setImmediate(function () {
-        return _this6.tabs.length > 0 && _this6.tabs[_this6.getActiveTabIndex()].loaded.then(function (el) {
-          return el && _setImmediate(function () {
-            return el._show();
+        var tabs = _this6.tabs;
+        var activeIndex = _this6.getActiveTabIndex(tabs);
+        _this6._loadInactive.resolve();
+        if (tabs.length > 0 && activeIndex >= 0) {
+          tabs[activeIndex].loaded.then(function (el) {
+            return el && _setImmediate(function () {
+              return el._show();
+            });
           });
-        });
+        }
       });
     }
   }, {
@@ -709,5 +724,5 @@ var TabbarElement = function (_BaseElement) {
 export default TabbarElement;
 
 
-ons.elements.Tabbar = TabbarElement;
+onsElements.Tabbar = TabbarElement;
 customElements.define('ons-tabbar', TabbarElement);

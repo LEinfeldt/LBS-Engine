@@ -16,7 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import BaseInputElement from './base/base-input';
 
 var scheme = {
@@ -117,5 +117,5 @@ var SearchInputElement = function (_BaseInputElement) {
 export default SearchInputElement;
 
 
-ons.elements.SearchInput = SearchInputElement;
+onsElements.SearchInput = SearchInputElement;
 customElements.define('ons-search-input', SearchInputElement);

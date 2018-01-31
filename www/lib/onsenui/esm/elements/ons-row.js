@@ -19,7 +19,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import BaseElement from './base/base-element';
 
 /**
@@ -68,5 +68,5 @@ var RowElement = function (_BaseElement) {
 export default RowElement;
 
 
-ons.elements.Row = RowElement;
+onsElements.Row = RowElement;
 customElements.define('ons-row', RowElement);

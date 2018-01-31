@@ -83,11 +83,6 @@ var BaseDialogElement = function (_BaseElement) {
       }
     }
   }, {
-    key: '_preventScroll',
-    value: function _preventScroll(event) {
-      event.cancelable && event.preventDefault();
-    }
-  }, {
     key: 'show',
     value: function show() {
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
@@ -143,6 +138,7 @@ var BaseDialogElement = function (_BaseElement) {
 
           shouldShow && _this3._toggleStyle(true, options);
           _this3._visible = shouldShow;
+          util.iosPageScrollFix(shouldShow);
 
           contentReady(_this3, function () {
             animator[action](_this3, function () {
@@ -184,7 +180,7 @@ var BaseDialogElement = function (_BaseElement) {
       contentReady(this, function () {
         if (_this5._mask) {
           _this5._mask.addEventListener('click', _this5._cancel, false);
-          _this5._mask.addEventListener('touchmove', _this5._preventScroll, false); // iOS fix
+          util.iosMaskScrollFix(_this5._mask, true);
         }
       });
     }
@@ -196,7 +192,7 @@ var BaseDialogElement = function (_BaseElement) {
 
       if (this._mask) {
         this._mask.removeEventListener('click', this._cancel, false);
-        this._mask.removeEventListener('touchmove', this._preventScroll, false);
+        util.iosMaskScrollFix(this._mask, false);
       }
     }
   }, {

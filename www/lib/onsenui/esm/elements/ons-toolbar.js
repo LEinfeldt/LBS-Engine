@@ -20,7 +20,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import internal from '../ons/internal';
 import autoStyle from '../ons/autostyle';
@@ -243,5 +243,5 @@ var ToolbarElement = function (_BaseElement) {
 export default ToolbarElement;
 
 
-ons.elements.Toolbar = ToolbarElement;
+onsElements.Toolbar = ToolbarElement;
 customElements.define('ons-toolbar', ToolbarElement);

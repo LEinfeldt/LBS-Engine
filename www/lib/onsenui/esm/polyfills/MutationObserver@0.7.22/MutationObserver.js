@@ -1,4 +1,3 @@
-import _Object$defineProperty from "babel-runtime/core-js/object/define-property";
 import _WeakMap from "babel-runtime/core-js/weak-map";
 /**
  * @license
@@ -10,41 +9,6 @@ import _WeakMap from "babel-runtime/core-js/weak-map";
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
 // @version 0.7.22
-if (typeof _WeakMap === "undefined") {
-  (function () {
-    var defineProperty = _Object$defineProperty;
-    var counter = Date.now() % 1e9;
-    var WeakMap = function WeakMap() {
-      this.name = "__st" + (Math.random() * 1e9 >>> 0) + (counter++ + "__");
-    };
-    WeakMap.prototype = {
-      set: function set(key, value) {
-        var entry = key[this.name];
-        if (entry && entry[0] === key) entry[1] = value;else defineProperty(key, this.name, {
-          value: [key, value],
-          writable: true
-        });
-        return this;
-      },
-      get: function get(key) {
-        var entry;
-        return (entry = key[this.name]) && entry[0] === key ? entry[1] : undefined;
-      },
-      "delete": function _delete(key) {
-        var entry = key[this.name];
-        if (!entry || entry[0] !== key) return false;
-        entry[0] = entry[1] = undefined;
-        return true;
-      },
-      has: function has(key) {
-        var entry = key[this.name];
-        if (!entry) return false;
-        return entry[0] === key;
-      }
-    };
-    window.WeakMap = WeakMap;
-  })();
-}
 
 (function (global) {
   if (global.JsMutationObserver) {

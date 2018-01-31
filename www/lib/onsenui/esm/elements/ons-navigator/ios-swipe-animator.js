@@ -96,6 +96,10 @@ var IOSSwipeNavigatorAnimator = function (_IOSSlideNavigatorAni) {
   }, {
     key: 'translate',
     value: function translate(distance, maxWidth, enterPage, leavePage) {
+      if (enterPage.style.display === 'none') {
+        enterPage.style.display = '';
+      }
+
       if (this.isDragStart) {
         this.maxWidth = maxWidth;
         this._dragStartSetup(enterPage, leavePage);
@@ -220,6 +224,7 @@ var IOSSwipeNavigatorAnimator = function (_IOSSlideNavigatorAni) {
           duration: this.durationRestore
         }).queue(function (done) {
           _this2._reset(_this2.target.enter, _this2.target.leave);
+          enterPage.style.display = 'none';
           callback && callback();
           done();
         }));
@@ -239,6 +244,7 @@ var IOSSwipeNavigatorAnimator = function (_IOSSlideNavigatorAni) {
           duration: this.durationRestore
         }).queue(function (done) {
           _this2._reset(enterPage, leavePage);
+          enterPage.style.display = 'none';
           callback && callback();
           done();
         }));

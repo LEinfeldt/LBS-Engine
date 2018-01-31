@@ -16,8 +16,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 */
-var readyMap = new _WeakMap();
-var queueMap = new _WeakMap();
+
+var readyMap = void 0,
+    queueMap = void 0;
 
 function isContentReady(element) {
   if (element.childNodes.length > 0) {
@@ -47,6 +48,11 @@ function consumeQueue(element) {
 
 export default function contentReady(element) {
   var fn = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+
+  if (readyMap === undefined) {
+    readyMap = new _WeakMap();
+    queueMap = new _WeakMap();
+  }
 
   addCallback(element, fn);
 

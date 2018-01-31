@@ -19,7 +19,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
+import util from '../ons/util';
 import BaseInputElement from './base/base-input';
 
 var scheme = {
@@ -62,13 +63,13 @@ var RangeElement = function (_BaseInputElement) {
 
     var _this = _possibleConstructorReturn(this, (RangeElement.__proto__ || _Object$getPrototypeOf(RangeElement)).call(this));
 
-    _this._boundOnMouseDown = _this._onMouseDown.bind(_this);
-    _this._boundOnMouseUp = _this._onMouseUp.bind(_this);
-    _this._boundOnTouchStart = _this._onTouchStart.bind(_this);
-    _this._boundOnTouchEnd = _this._onTouchEnd.bind(_this);
-    _this._boundOnInput = _this._update.bind(_this);
-    _this._boundOnDragstart = _this._onDragstart.bind(_this);
-    _this._boundOnDragend = _this._onDragend.bind(_this);
+    _this._onMouseDown = _this._onMouseDown.bind(_this);
+    _this._onMouseUp = _this._onMouseUp.bind(_this);
+    _this._onTouchStart = _this._onTouchStart.bind(_this);
+    _this._onTouchEnd = _this._onTouchEnd.bind(_this);
+    _this._onInput = _this._update.bind(_this);
+    _this._onDragstart = _this._onDragstart.bind(_this);
+    _this._onDragend = _this._onDragend.bind(_this);
     return _this;
   }
 
@@ -174,24 +175,24 @@ var RangeElement = function (_BaseInputElement) {
   }, {
     key: 'connectedCallback',
     value: function connectedCallback() {
-      this.addEventListener('mousedown', this._boundOnMouseDown);
-      this.addEventListener('mouseup', this._boundOnMouseUp);
-      this.addEventListener('touchstart', this._boundOnTouchStart);
-      this.addEventListener('touchend', this._boundOnTouchEnd);
-      this.addEventListener('dragstart', this._boundOnDragstart);
-      this.addEventListener('dragend', this._boundOnDragend);
-      this.addEventListener('input', this._boundOnInput);
+      this._setupListeners(true);
     }
   }, {
     key: 'disconnectedCallback',
     value: function disconnectedCallback() {
-      this.removeEventListener('mousedown', this._boundOnMouseDown);
-      this.removeEventListener('mouseup', this._boundOnMouseUp);
-      this.removeEventListener('touchstart', this._boundOnTouchStart);
-      this.removeEventListener('touchend', this._boundOnTouchEnd);
-      this.removeEventListener('dragstart', this._boundOnDragstart);
-      this.removeEventListener('dragend', this._boundOnDragend);
-      this.removeEventListener('input', this._boundOnInput);
+      this._setupListeners(false);
+    }
+  }, {
+    key: '_setupListeners',
+    value: function _setupListeners(add) {
+      var action = (add ? 'add' : 'remove') + 'EventListener';
+      util[action](this, 'touchstart', this._onTouchStart, { passive: true });
+      this[action]('mousedown', this._onMouseDown);
+      this[action]('mouseup', this._onMouseUp);
+      this[action]('touchend', this._onTouchEnd);
+      this[action]('dragstart', this._onDragstart);
+      this[action]('dragend', this._onDragend);
+      this[action]('input', this._onInput);
     }
 
     /**
@@ -264,5 +265,5 @@ var RangeElement = function (_BaseInputElement) {
 export default RangeElement;
 
 
-ons.elements.Range = RangeElement;
+onsElements.Range = RangeElement;
 customElements.define('ons-range', RangeElement);

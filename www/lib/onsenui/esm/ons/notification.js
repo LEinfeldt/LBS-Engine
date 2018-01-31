@@ -1,6 +1,7 @@
-import _extends from 'babel-runtime/helpers/extends';
 import _setImmediate from 'babel-runtime/core-js/set-immediate';
 import _Object$keys from 'babel-runtime/core-js/object/keys';
+import _Promise from 'babel-runtime/core-js/promise';
+import _extends from 'babel-runtime/helpers/extends';
 /*
 Copyright 2013-2015 ASIAL CORPORATION
 
@@ -30,6 +31,36 @@ var _setAttributes = function _setAttributes(element, options) {
   if (options.modifier) {
     util.addModifier(element, options.modifier);
   }
+};
+
+var _normalizeArguments = function _normalizeArguments(message) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var defaults = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+  options = _extends({}, options);
+  typeof message === 'string' ? options.message = message : options = message;
+  if (!options || !options.message && !options.messageHTML) {
+    throw new Error('Notifications must contain a message.');
+  }
+
+  if (options.hasOwnProperty('buttonLabels') || options.hasOwnProperty('buttonLabel')) {
+    options.buttonLabels = options.buttonLabels || options.buttonLabel;
+    if (!Array.isArray(options.buttonLabels)) {
+      options.buttonLabels = [options.buttonLabels || ''];
+    }
+  }
+
+  return util.extend({
+    compile: function compile(param) {
+      return param;
+    },
+    callback: function callback(param) {
+      return param;
+    },
+    animation: 'default',
+    cancelable: false,
+    primaryButtonIndex: (options.buttonLabels || defaults.buttonLabels || []).length - 1
+  }, defaults, options);
 };
 
 /**
@@ -69,140 +100,115 @@ var _setAttributes = function _setAttributes(element, options) {
  */
 var notification = {};
 
-notification._createAlertDialog = function (options) {
-  // Prompt input string
-  var inputString = '';
-  if (options.isPrompt) {
-    inputString = '\n      <input\n        class="text-input text-input--underbar"\n        type="' + (options.inputType || 'text') + '"\n        placeholder="' + (options.placeholder || '') + '"\n        value="' + (options.defaultValue || '') + '"\n        style="width: 100%; margin-top: 10px;"\n      />\n    ';
+notification._createAlertDialog = function () {
+  for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
+    params[_key] = arguments[_key];
   }
 
-  // Buttons string
-  var buttons = '';
-  options.buttonLabels.forEach(function (label, index) {
-    buttons += '\n      <ons-alert-dialog-button\n        class="\n          ' + (index === options.primaryButtonIndex ? ' alert-dialog-button--primal' : '') + '\n          ' + (options.buttonLabels.length <= 2 ? ' alert-dialog-button--rowfooter' : '') + '\n        " \n        style="position: relative;">\n        ' + label + '\n      </ons-alert-dialog-button>\n    ';
-  });
+  return new _Promise(function (resolve) {
+    var options = _normalizeArguments.apply(undefined, params);
+    util.checkMissingImport('AlertDialog', 'AlertDialogButton');
 
-  // Dialog Element
-  var el = {};
-  var _destroyDialog = function _destroyDialog() {
-    if (el.dialog.onDialogCancel) {
-      el.dialog.removeEventListener('dialog-cancel', el.dialog.onDialogCancel);
+    // Prompt input string
+    var inputString = '';
+    if (options.isPrompt) {
+      inputString = '\n      <input\n        class="text-input text-input--underbar"\n        type="' + (options.inputType || 'text') + '"\n        placeholder="' + (options.placeholder || '') + '"\n        value="' + (options.defaultValue || '') + '"\n        style="width: 100%; margin-top: 10px;"\n      />\n    ';
     }
 
-    _Object$keys(el).forEach(function (key) {
-      return delete el[key];
+    // Buttons string
+    var buttons = '';
+    options.buttonLabels.forEach(function (label, index) {
+      buttons += '\n      <ons-alert-dialog-button\n        class="\n          ' + (index === options.primaryButtonIndex ? ' alert-dialog-button--primal' : '') + '\n          ' + (options.buttonLabels.length <= 2 ? ' alert-dialog-button--rowfooter' : '') + '\n        "\n        style="position: relative;">\n        ' + label + '\n      </ons-alert-dialog-button>\n    ';
     });
-    el = null;
 
-    if (options.destroy instanceof Function) {
-      options.destroy();
+    // Dialog Element
+    var el = {};
+    var _destroyDialog = function _destroyDialog() {
+      if (el.dialog.onDialogCancel) {
+        el.dialog.removeEventListener('dialog-cancel', el.dialog.onDialogCancel);
+      }
+
+      _Object$keys(el).forEach(function (key) {
+        return delete el[key];
+      });
+      el = null;
+
+      if (options.destroy instanceof Function) {
+        options.destroy();
+      }
+    };
+
+    el.dialog = document.createElement('ons-alert-dialog');
+    el.dialog.innerHTML = '\n    <div class="alert-dialog-mask"></div>\n    <div class="alert-dialog">\n      <div class="alert-dialog-container">\n        <div class="alert-dialog-title">\n          ' + (options.title || '') + '\n        </div>\n        <div class="alert-dialog-content">\n          ' + (options.message || options.messageHTML) + '\n          ' + inputString + '\n        </div>\n        <div class="\n          alert-dialog-footer\n          ' + (options.buttonLabels.length <= 2 ? ' alert-dialog-footer--rowfooter' : '') + '\n        ">\n          ' + buttons + '\n        </div>\n      </div>\n    </div>\n  ';
+    contentReady(el.dialog);
+
+    // Set attributes
+    _setAttributes(el.dialog, options);
+
+    // Prompt events
+    if (options.isPrompt && options.submitOnEnter) {
+      el.input = el.dialog.querySelector('.text-input');
+      el.input.onkeypress = function (event) {
+        if (event.keyCode === 13) {
+          el.dialog.hide().then(function () {
+            if (el) {
+              var resolveValue = el.input.value;
+              _destroyDialog();
+              options.callback(resolveValue);
+              resolve(resolveValue);
+            }
+          });
+        }
+      };
     }
-  };
 
-  el.dialog = document.createElement('ons-alert-dialog');
-  el.dialog.innerHTML = '\n    <div class="alert-dialog-mask"></div>\n    <div class="alert-dialog">\n      <div class="alert-dialog-container">\n        <div class="alert-dialog-title">\n          ' + (options.title || '') + '\n        </div>\n        <div class="alert-dialog-content">\n          ' + (options.message || options.messageHTML) + '\n          ' + inputString + '\n        </div>\n        <div class="\n          alert-dialog-footer\n          ' + (options.buttonLabels.length <= 2 ? ' alert-dialog-footer--rowfooter' : '') + '\n        ">\n          ' + buttons + '\n        </div>\n      </div>\n    </div>\n  ';
-  contentReady(el.dialog);
-
-  // Set attributes
-  _setAttributes(el.dialog, options);
-
-  var deferred = util.defer();
-
-  // Prompt events
-  if (options.isPrompt && options.submitOnEnter) {
-    el.input = el.dialog.querySelector('.text-input');
-    el.input.onkeypress = function (event) {
-      if (event.keyCode === 13) {
+    // Button events
+    el.footer = el.dialog.querySelector('.alert-dialog-footer');
+    util.arrayFrom(el.dialog.querySelectorAll('.alert-dialog-button')).forEach(function (buttonElement, index) {
+      buttonElement.onclick = function () {
         el.dialog.hide().then(function () {
           if (el) {
-            var resolveValue = el.input.value;
+            var resolveValue = index;
+            if (options.isPrompt) {
+              resolveValue = index === options.primaryButtonIndex ? el.input.value : null;
+            }
+            el.dialog.remove();
             _destroyDialog();
             options.callback(resolveValue);
-            deferred.resolve(resolveValue);
+            resolve(resolveValue);
           }
         });
-      }
-    };
-  }
+      };
 
-  // Button events
-  el.footer = el.dialog.querySelector('.alert-dialog-footer');
-  util.arrayFrom(el.dialog.querySelectorAll('.alert-dialog-button')).forEach(function (buttonElement, index) {
-    buttonElement.onclick = function () {
-      el.dialog.hide().then(function () {
-        if (el) {
-          var resolveValue = index;
-          if (options.isPrompt) {
-            resolveValue = index === options.primaryButtonIndex ? el.input.value : null;
-          }
+      el.footer.appendChild(buttonElement);
+    });
+
+    // Cancel events
+    if (options.cancelable) {
+      el.dialog.cancelable = true;
+      el.dialog.onDialogCancel = function () {
+        _setImmediate(function () {
           el.dialog.remove();
           _destroyDialog();
-          options.callback(resolveValue);
-          deferred.resolve(resolveValue);
+        });
+        var resolveValue = options.isPrompt ? null : -1;
+        options.callback(resolveValue);
+        resolve(resolveValue);
+      };
+      el.dialog.addEventListener('dialog-cancel', el.dialog.onDialogCancel, false);
+    }
+
+    // Show dialog
+    document.body.appendChild(el.dialog);
+    options.compile(el.dialog);
+    _setImmediate(function () {
+      el.dialog.show().then(function () {
+        if (el.input && options.isPrompt && options.autofocus) {
+          el.input.focus();
         }
       });
-    };
-
-    el.footer.appendChild(buttonElement);
-  });
-
-  // Cancel events
-  if (options.cancelable) {
-    el.dialog.cancelable = true;
-    el.dialog.onDialogCancel = function () {
-      _setImmediate(function () {
-        el.dialog.remove();
-        _destroyDialog();
-      });
-      var resolveValue = options.isPrompt ? null : -1;
-      options.callback(resolveValue);
-      deferred.resolve(resolveValue);
-    };
-    el.dialog.addEventListener('dialog-cancel', el.dialog.onDialogCancel, false);
-  }
-
-  // Show dialog
-  document.body.appendChild(el.dialog);
-  options.compile(el.dialog);
-  _setImmediate(function () {
-    el.dialog.show().then(function () {
-      if (el.input && options.isPrompt && options.autofocus) {
-        el.input.focus();
-      }
     });
   });
-
-  return deferred.promise;
-};
-
-var _normalizeArguments = function _normalizeArguments(message) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var defaults = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
-  options = _extends({}, options);
-  typeof message === 'string' ? options.message = message : options = message;
-  if (!options.message && !options.messageHTML) {
-    throw new Error('Notifications must contain a message.');
-  }
-
-  if (options.hasOwnProperty('buttonLabels') || options.hasOwnProperty('buttonLabel')) {
-    options.buttonLabels = options.buttonLabels || options.buttonLabel;
-    if (!Array.isArray(options.buttonLabels)) {
-      options.buttonLabels = [options.buttonLabels || ''];
-    }
-  }
-
-  return util.extend({
-    compile: function compile(param) {
-      return param;
-    },
-    callback: function callback(param) {
-      return param;
-    },
-    animation: 'default',
-    cancelable: false,
-    primaryButtonIndex: (options.buttonLabels || defaults.buttonLabels || []).length - 1
-  }, defaults, options);
 };
 
 /**
@@ -272,12 +278,10 @@ var _normalizeArguments = function _normalizeArguments(message) {
  *   [/ja]
  */
 notification.alert = function (message, options) {
-  options = _normalizeArguments(message, options, {
+  return notification._createAlertDialog(message, options, {
     buttonLabels: ['OK'],
     title: 'Alert'
   });
-
-  return notification._createAlertDialog(options);
 };
 
 /**
@@ -318,12 +322,10 @@ notification.alert = function (message, options) {
  *   [/ja]
  */
 notification.confirm = function (message, options) {
-  options = _normalizeArguments(message, options, {
+  return notification._createAlertDialog(message, options, {
     buttonLabels: ['Cancel', 'OK'],
     title: 'Confirm'
   });
-
-  return notification._createAlertDialog(options);
 };
 
 /**
@@ -378,15 +380,13 @@ notification.confirm = function (message, options) {
  *   [/ja]
  */
 notification.prompt = function (message, options) {
-  options = _normalizeArguments(message, options, {
+  return notification._createAlertDialog(message, options, {
     buttonLabels: ['OK'],
     title: 'Alert',
     isPrompt: true,
     autofocus: true,
     submitOnEnter: true
   });
-
-  return notification._createAlertDialog(options);
 };
 
 /**
@@ -442,51 +442,56 @@ notification.prompt = function (message, options) {
  *   [ja][/ja]
  */
 notification.toast = function (message, options) {
-  options = _normalizeArguments(message, options, {
-    timeout: 0,
-    force: false
-  });
+  var promise = new _Promise(function (resolve) {
+    util.checkMissingImport('Toast'); // Throws error, must be inside promise
 
-  var toast = util.createElement('\n    <ons-toast>\n      ' + options.message + '\n      ' + (options.buttonLabels ? '<button>' + options.buttonLabels[0] + '</button>' : '') + '\n    </ons-toast>\n  ');
+    options = _normalizeArguments(message, options, {
+      timeout: 0,
+      force: false
+    });
 
-  _setAttributes(toast, options);
+    var toast = util.createElement('\n      <ons-toast>\n        ' + options.message + '\n        ' + (options.buttonLabels ? '<button>' + options.buttonLabels[0] + '</button>' : '') + '\n      </ons-toast>\n    ');
 
-  var deferred = util.defer();
-  var resolve = function resolve(value) {
-    if (toast) {
-      toast.hide().then(function () {
-        if (toast) {
-          toast.remove();
-          toast = null;
-          options.callback(value);
-          deferred.resolve(value);
+    _setAttributes(toast, options);
+
+    var finish = function finish(value) {
+      if (toast) {
+        toast.hide().then(function () {
+          if (toast) {
+            toast.remove();
+            toast = null;
+            options.callback(value);
+            resolve(value);
+          }
+        });
+      }
+    };
+
+    if (options.buttonLabels) {
+      util.findChild(toast._toast, 'button').onclick = function () {
+        return finish(0);
+      };
+    }
+
+    document.body.appendChild(toast);
+    options.compile(toast);
+
+    var show = function show() {
+      toast.parentElement && toast.show(options).then(function () {
+        if (options.timeout) {
+          setTimeout(function () {
+            return finish(-1);
+          }, options.timeout);
         }
       });
-    }
-  };
-
-  if (options.buttonLabels) {
-    util.findChild(toast._toast, 'button').onclick = function () {
-      return resolve(0);
     };
-  }
 
-  document.body.appendChild(toast);
-  options.compile(toast);
-
-  var show = function show() {
-    toast.parentElement && toast.show(options).then(function () {
-      if (options.timeout) {
-        setTimeout(function () {
-          return resolve(-1);
-        }, options.timeout);
-      }
+    _setImmediate(function () {
+      return options.force ? show() : ToastQueue.add(show, promise);
     });
-  };
+  });
 
-  options.force ? show() : ToastQueue.add(show, deferred.promise);
-
-  return deferred.promise;
+  return promise;
 };
 
 export default notification;

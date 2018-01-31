@@ -1,6 +1,5 @@
 {
     "app": {
-        "name": "LBS Engine",
         "logging": true,
         "externalData": false,
         "gps": true,

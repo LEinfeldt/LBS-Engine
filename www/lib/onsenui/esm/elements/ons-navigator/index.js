@@ -24,7 +24,7 @@ limitations under the License.
 
 */
 
-import ons from '../../ons';
+import onsElements from '../../ons/elements';
 import util from '../../ons/util';
 import internal from '../../ons/internal';
 import SwipeReveal from '../../ons/internal/swipe-reveal';
@@ -114,7 +114,7 @@ var rewritables = {
  *   </ons-page>
  * </ons-navigator>
  *
- * <ons-template id="page.html">
+ * <template id="page.html">
  *   <ons-page>
  *     <ons-toolbar>
  *       <div class="left">
@@ -125,7 +125,7 @@ var rewritables = {
  *       </div>
  *     </ons-toolbar>
  *   </ons-page>
- * </ons-template>
+ * </template>
  */
 
 var NavigatorElement = function (_BaseElement) {
@@ -445,6 +445,9 @@ var NavigatorElement = function (_BaseElement) {
      * @param {Object} [options.data]
      *   [en]Custom data that will be stored in the new page element.[/en]
      *   [ja][/ja]
+     * @param {Number} [options.times]
+     *   [en]Number of pages to be popped. Only one animation will be shown.[/en]
+     *   [ja][/ja]
      * @return {Promise}
      *   [en]Promise which resolves to the revealed page.[/en]
      *   [ja]明らかにしたページを解決するPromiseを返します。[/ja]
@@ -464,6 +467,10 @@ var NavigatorElement = function (_BaseElement) {
 
       options = _preparePageAndOption.options;
 
+
+      if (util.isInteger(options.times) && options.times > 1) {
+        this._removePages(options.times);
+      }
 
       var popUpdate = function popUpdate() {
         return new _Promise(function (resolve) {
@@ -505,31 +512,30 @@ var NavigatorElement = function (_BaseElement) {
         var leavePage = _this4.pages[length - 1];
         var enterPage = _this4.pages[length - 2];
 
-        options.animation = options.animation || (leavePage.pushedOptions ? leavePage.pushedOptions.animation : undefined);
-        options.animationOptions = util.extend({}, leavePage.pushedOptions ? leavePage.pushedOptions.animationOptions : {}, options.animationOptions || {});
+        options = util.extend({}, _this4.options || {}, leavePage.pushedOptions || {}, options);
 
         if (options.data) {
           enterPage.data = util.extend({}, enterPage.data || {}, options.data || {});
         }
 
-        var callback = function callback() {
+        var done = function done() {
           update().then(function () {
             _this4._isRunning = false;
 
             enterPage._show();
             util.triggerElementEvent(_this4, 'postpop', { leavePage: leavePage, enterPage: enterPage, navigator: _this4 });
 
-            if (typeof options.callback === 'function') {
-              options.callback();
-            }
+            options.callback && options.callback(enterPage);
 
             resolve(enterPage);
           });
         };
 
         leavePage._hide();
+        enterPage.style.display = '';
+
         var animator = options.animator || _this4._animatorFactory.newAnimator(options);
-        animator.pop(_this4.pages[length - 2], _this4.pages[length - 1], callback);
+        animator.pop(_this4.pages[length - 2], _this4.pages[length - 1], done);
       }).catch(function () {
         return _this4._isRunning = false;
       });
@@ -539,8 +545,8 @@ var NavigatorElement = function (_BaseElement) {
      * @method pushPage
      * @signature pushPage(page, [options])
      * @param {String} page
-     *   [en]Page URL. Can be either a HTML document or a template defined with the `<ons-template>` tag.[/en]
-     *   [ja]pageのURLか、もしくはons-templateで宣言したテンプレートのid属性の値を指定できます。[/ja]
+     *   [en]Page URL. Can be either a HTML document or a template defined with the `<template>` tag.[/en]
+     *   [ja]pageのURLか、もしくは`<template>`で宣言したテンプレートのid属性の値を指定できます。[/ja]
      * @param {Object} [options]
      *   [en]Parameter object.[/en]
      *   [ja]オプションを指定するオブジェクト。[/ja]
@@ -666,9 +672,11 @@ var NavigatorElement = function (_BaseElement) {
             });
             util.triggerElementEvent(_this6, 'postpush', { leavePage: leavePage, enterPage: enterPage, navigator: _this6 });
 
-            if (typeof options.callback === 'function') {
-              options.callback();
+            if (leavePage) {
+              leavePage.style.display = 'none';
             }
+
+            options.callback && options.callback(enterPage);
 
             resolve(enterPage);
           };
@@ -761,6 +769,7 @@ var NavigatorElement = function (_BaseElement) {
 
           options.animationOptions = util.extend({}, AnimatorFactory.parseAnimationOptionsString(_this8.getAttribute('animation-options')), options.animationOptions || {});
 
+          pageElement.style.display = 'none';
           _this8.insertBefore(pageElement, _this8.pages[index]);
           _this8.topPage.updateBackButton(true);
 
@@ -820,6 +829,9 @@ var NavigatorElement = function (_BaseElement) {
      * @return {Promise}
      *   [en]Promise which resolves to the new top page.[/en]
      *   [ja]新しいトップページを解決するPromiseを返します。[/ja]
+     * @param {Boolean} [options.pop]
+     *   [en]Performs 'pop' effect if `true` instead of 'push' or none. This also sets `options.animation` value to `default` instead of `none`.[/en]
+     *   [ja][/ja]
      * @description
      *   [en]Clears page stack and adds the specified page to the stack. Extends `pushPage()` parameters.[/en]
      *   [ja]ページスタックをリセットし、指定したページを表示します。[/ja]
@@ -838,24 +850,28 @@ var NavigatorElement = function (_BaseElement) {
       options = _preparePageAndOption4.options;
 
 
-      if (!options.animator && !options.animation) {
+      if (!options.animator && !options.animation && !options.pop) {
         options.animation = 'none';
       }
-
-      var callback = options.callback;
-
-      options.callback = function () {
-        while (_this10.pages.length > 1) {
-          _this10._pageLoader.unload(_this10.pages[0]);
-        }
-
-        _this10.pages[0].updateBackButton(false);
-        callback && callback();
-      };
 
       if (!options.page && !options.pageHTML && this._getPageTarget()) {
         page = options.page = this._getPageTarget();
       }
+
+      if (options.pop) {
+        this._removePages();
+        return this.insertPage(0, page, { data: options.data }).then(function () {
+          return _this10.popPage(options);
+        });
+      }
+
+      // Tip: callback runs before resolved promise
+      var callback = options.callback;
+      options.callback = function (newPage) {
+        _this10._removePages();
+        newPage.updateBackButton(false);
+        callback && callback(newPage);
+      };
 
       return this.pushPage(page, options);
     }
@@ -907,6 +923,7 @@ var NavigatorElement = function (_BaseElement) {
         return _Promise.reject('Canceled in prepush event.');
       }
 
+      page.style.display = '';
       page.style.visibility = 'hidden';
       page.parentNode.appendChild(page);
       return this._pushPage(options);
@@ -927,6 +944,18 @@ var NavigatorElement = function (_BaseElement) {
       options = util.extend({}, this.options || {}, options, { page: page });
 
       return { page: page, options: options };
+    }
+  }, {
+    key: '_removePages',
+    value: function _removePages(times) {
+      var pages = this.pages;
+      var until = times === undefined ? 0 : pages.length - times;
+      until = until < 0 ? 1 : until;
+
+      for (var i = pages.length - 2; i >= until; i--) {
+        this._pageMap.delete(pages[i]);
+        this._pageLoader.unload(pages[i]);
+      }
     }
   }, {
     key: '_updateLastPageBackButton',
@@ -1237,5 +1266,5 @@ var NavigatorElement = function (_BaseElement) {
 export default NavigatorElement;
 
 
-ons.elements.Navigator = NavigatorElement;
+onsElements.Navigator = NavigatorElement;
 customElements.define('ons-navigator', NavigatorElement);

@@ -21,7 +21,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import autoStyle from '../ons/autostyle';
 import ModifierUtil from '../ons/internal/modifier-util';
@@ -240,6 +240,7 @@ var SelectElement = function (_BaseElement) {
 
       ['disabled', 'length', 'multiple', 'name', 'options', 'selectedIndex', 'size', 'value', 'form', 'type'].forEach(function (key) {
         _Object$defineProperty(_this4, key, {
+          configurable: true,
           enumerable: true,
           get: function get() {
             return _this4._select[key];
@@ -280,5 +281,5 @@ var SelectElement = function (_BaseElement) {
 export default SelectElement;
 
 
-ons.elements.Select = SelectElement;
+onsElements.Select = SelectElement;
 customElements.define('ons-select', SelectElement);

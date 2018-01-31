@@ -21,7 +21,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import styler from '../ons/styler';
 import platform from '../ons/platform';
@@ -97,7 +97,7 @@ var PullHookElement = function (_BaseElement) {
    * @attribute threshold-height
    * @type {String}
    * @description
-   *   [en]Specify the threshold height. The component automatically switches to the "action" state when pulled further than this value. The default value is "96px". A negative value or a value less than the height will disable this property.[/en]
+   *   [en]Specify the threshold height. The component automatically switches to the "action" state when pulled further than this value. The default value is "96px". A negative value will disable this property. If this value is lower than the height, it will skip "preaction" state.[/en]
    *   [ja]閾値となる高さを指定します。この値で指定した高さよりもpull downすると、このコンポーネントは自動的に"action"状態に移行します。[/ja]
    */
 
@@ -112,6 +112,8 @@ var PullHookElement = function (_BaseElement) {
     _classCallCheck(this, PullHookElement);
 
     var _this = _possibleConstructorReturn(this, (PullHookElement.__proto__ || _Object$getPrototypeOf(PullHookElement)).call(this));
+
+    _this._shouldFixScroll = util.globals.actualMobileOS !== 'other';
 
     _this._onDrag = _this._onDrag.bind(_this);
     _this._onDragStart = _this._onDragStart.bind(_this);
@@ -194,14 +196,18 @@ var PullHookElement = function (_BaseElement) {
       // Hack to make it work on Android 4.4 WebView and iOS UIWebView. Scrolls manually
       // near the top of the page so there will be no inertial scroll when scrolling down.
       // Allowing default scrolling will kill all 'touchmove' events.
-      this._pageElement.scrollTop = this._startScroll - event.gesture.deltaY;
-      if (this._pageElement.scrollTop < window.innerHeight && event.gesture.direction !== 'up') {
-        event.gesture.preventDefault();
+      if (this._shouldFixScroll) {
+        this._pageElement.scrollTop = this._startScroll - event.gesture.deltaY;
+        if (this._pageElement.scrollTop < window.innerHeight && event.gesture.direction !== 'up') {
+          event.gesture.preventDefault();
+        }
       }
 
       var scroll = Math.max(event.gesture.deltaY - this._startScroll, 0);
       if (scroll !== this._currentTranslation) {
-        if (this._thresholdHeightEnabled() && scroll >= this.thresholdHeight) {
+
+        var th = this.thresholdHeight;
+        if (th > 0 && scroll >= th) {
           event.gesture.stopDetect();
           _setImmediate(function () {
             return _this3._finish();
@@ -212,14 +218,22 @@ var PullHookElement = function (_BaseElement) {
           this._setState(STATE_INITIAL);
         }
 
-        this._pulling = true;
+        if (!this._pulling && this._shouldFixScroll) {
+          this._pulling = true;
+          this._gestureDetector.on('touchmove', this._preventScroll);
+        }
+
         this._translateTo(scroll);
       }
     }
   }, {
     key: '_onDragEnd',
     value: function _onDragEnd(event) {
-      this._pulling = false;
+      if (this._pulling && this._shouldFixScroll) {
+        this._pulling = false;
+        this._gestureDetector.off('touchmove', this._preventScroll);
+      }
+
       if (!event.gesture || this.disabled || this._ignoreDrag) {
         return;
       }
@@ -240,7 +254,7 @@ var PullHookElement = function (_BaseElement) {
     key: '_preventScroll',
     value: function _preventScroll(event) {
       // Fix for Android & iOS when starting from scrollTop > 0 or pulling back
-      this._pulling && event.cancelable && event.preventDefault();
+      event.cancelable && event.preventDefault();
     }
 
     /**
@@ -275,12 +289,6 @@ var PullHookElement = function (_BaseElement) {
      *   [ja][/ja]
      */
 
-  }, {
-    key: '_thresholdHeightEnabled',
-    value: function _thresholdHeightEnabled() {
-      var th = this.thresholdHeight;
-      return th > 0 && th >= this.height;
-    }
   }, {
     key: '_setState',
     value: function _setState(state, noEvent) {
@@ -369,10 +377,10 @@ var PullHookElement = function (_BaseElement) {
         return _this6._pageElement[action + 'EventListener']('scroll', _this6._onScroll, false);
       };
       var gdToggle = function gdToggle(action) {
-        _this6._gestureDetector[action]('drag', _this6._onDrag);
-        _this6._gestureDetector[action]('dragstart', _this6._onDragStart);
-        _this6._gestureDetector[action]('dragend', _this6._onDragEnd);
-        _this6._gestureDetector[action]('touchmove', _this6._preventScroll);
+        var passive = { passive: true };
+        _this6._gestureDetector[action]('drag', _this6._onDrag, passive);
+        _this6._gestureDetector[action]('dragstart', _this6._onDragStart, passive);
+        _this6._gestureDetector[action]('dragend', _this6._onDragEnd, passive);
       };
 
       if (this._gestureDetector) {
@@ -386,7 +394,8 @@ var PullHookElement = function (_BaseElement) {
         this._gestureDetector = new GestureDetector(this._pageElement, {
           dragMinDistance: 1,
           dragDistanceCorrection: false,
-          dragLockToAxis: !this._dragLockDisabled
+          dragLockToAxis: !this._dragLockDisabled,
+          passive: !this._shouldFixScroll
         });
 
         gdToggle('on');
@@ -534,5 +543,5 @@ var PullHookElement = function (_BaseElement) {
 export default PullHookElement;
 
 
-ons.elements.PullHook = PullHookElement;
+onsElements.PullHook = PullHookElement;
 customElements.define('ons-pull-hook', PullHookElement);

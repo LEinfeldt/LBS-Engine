@@ -20,15 +20,8 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
-import util from '../ons/util';
-import autoStyle from '../ons/autostyle';
-import ModifierUtil from '../ons/internal/modifier-util';
-import BaseElement from './base/base-element';
-
-var defaultClassName = 'alert-dialog-button';
-
-var scheme = { '': 'alert-dialog-button--*' };
+import onsElements from '../ons/elements';
+import BaseButtonElement from './base/base-button';
 
 /**
  * @element ons-alert-dialog-button
@@ -54,85 +47,62 @@ var scheme = { '': 'alert-dialog-button--*' };
  *  </ons-alert-dialog>
  */
 
-var AlertDialogButtonElement = function (_BaseElement) {
-  _inherits(AlertDialogButtonElement, _BaseElement);
-
-  /**
-   * @attribute modifier
-   * @type {String}
-   * @description
-   *   [en]The appearance of the button.[/en]
-   *   [ja]ボタンの表現を指定します。[/ja]
-   */
-
-  /**
-   * @attribute disabled
-   * @description
-   *   [en]Specify if button should be disabled.[/en]
-   *   [ja]ボタンを無効化する場合は指定してください。[/ja]
-   */
+var AlertDialogButtonElement = function (_BaseButtonElement) {
+  _inherits(AlertDialogButtonElement, _BaseButtonElement);
 
   function AlertDialogButtonElement() {
     _classCallCheck(this, AlertDialogButtonElement);
 
-    var _this = _possibleConstructorReturn(this, (AlertDialogButtonElement.__proto__ || _Object$getPrototypeOf(AlertDialogButtonElement)).call(this));
-
-    _this._compile();
-    return _this;
+    return _possibleConstructorReturn(this, (AlertDialogButtonElement.__proto__ || _Object$getPrototypeOf(AlertDialogButtonElement)).apply(this, arguments));
   }
 
-  /**
-   * @property disabled
-   * @type {Boolean}
-   * @description
-   *   [en]Whether the element is disabled or not.[/en]
-   *   [ja]無効化されている場合に`true`。[/ja]
-   */
-
-
   _createClass(AlertDialogButtonElement, [{
-    key: '_compile',
-    value: function _compile() {
-      autoStyle.prepare(this);
+    key: '_scheme',
 
-      this.classList.add(defaultClassName);
 
-      util.updateRipple(this, undefined, { 'modifier': 'light-gray' });
+    /**
+     * @attribute modifier
+     * @type {String}
+     * @description
+     *   [en]The appearance of the button.[/en]
+     *   [ja]ボタンの表現を指定します。[/ja]
+     */
 
-      ModifierUtil.initModifier(this, scheme);
+    /**
+     * @attribute disabled
+     * @description
+     *   [en]Specify if button should be disabled.[/en]
+     *   [ja]ボタンを無効化する場合は指定してください。[/ja]
+     */
+
+    /**
+     * @property disabled
+     * @type {Boolean}
+     * @description
+     *   [en]Whether the element is disabled or not.[/en]
+     *   [ja]無効化されている場合に`true`。[/ja]
+     */
+
+    get: function get() {
+      return { '': 'alert-dialog-button--*' };
     }
   }, {
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      switch (name) {
-        case 'class':
-          util.restoreClass(this, defaultClassName, scheme);
-          break;
-        case 'modifier':
-          ModifierUtil.onModifierChanged(last, current, this, scheme);
-          break;
-      }
+    key: '_defaultClassName',
+    get: function get() {
+      return 'alert-dialog-button';
     }
   }, {
-    key: 'disabled',
-    set: function set(value) {
-      return util.toggleAttribute(this, 'disabled', value);
-    },
+    key: '_rippleOpt',
     get: function get() {
-      return this.hasAttribute('disabled');
-    }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return ['modifier', 'class'];
+      return [this, undefined, { 'modifier': 'light-gray' }];
     }
   }]);
 
   return AlertDialogButtonElement;
-}(BaseElement);
+}(BaseButtonElement);
 
 export default AlertDialogButtonElement;
 
 
-ons.elements.AlertDialogButton = AlertDialogButtonElement;
+onsElements.AlertDialogButton = AlertDialogButtonElement;
 customElements.define('ons-alert-dialog-button', AlertDialogButtonElement);

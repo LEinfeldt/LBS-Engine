@@ -22,7 +22,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import autoStyle from '../ons/autostyle';
 import ModifierUtil from '../ons/internal/modifier-util';
@@ -76,8 +76,8 @@ var SwitchElement = function (_BaseCheckboxElement) {
       _this.attributeChangedCallback('modifier', null, _this.getAttribute('modifier'));
     });
 
-    _this._boundOnChange = _this._onChange.bind(_this);
-    _this._boundOnRelease = _this._onRelease.bind(_this);
+    _this._onChange = _this._onChange.bind(_this);
+    _this._onRelease = _this._onRelease.bind(_this);
     return _this;
   }
 
@@ -112,16 +112,18 @@ var SwitchElement = function (_BaseCheckboxElement) {
   }, {
     key: '_onClick',
     value: function _onClick(ev) {
-      if (ev.target.classList.contains(this.defaultElementClass + '__touch')) {
-        ev.preventDefault();
-      }
+      if (ev.target.classList.contains(this.defaultElementClass + '__touch') || ev.timeStamp === this._lastTimeStamp // Prevent second click triggered by <label>
+      ) {
+          ev.preventDefault();
+        }
+      this._lastTimeStamp = ev.timeStamp;
     }
   }, {
     key: '_onHold',
     value: function _onHold(e) {
       if (!this.disabled) {
         ModifierUtil.addModifier(this, 'active');
-        document.addEventListener('release', this._boundOnRelease);
+        document.addEventListener('release', this._onRelease);
       }
     }
   }, {
@@ -138,13 +140,12 @@ var SwitchElement = function (_BaseCheckboxElement) {
       this._startX = this._locations[this.checked ? 1 : 0]; // - e.gesture.deltaX;
 
       this.addEventListener('drag', this._onDrag);
-      document.addEventListener('release', this._boundOnRelease);
+      document.addEventListener('release', this._onRelease);
     }
   }, {
     key: '_onDrag',
     value: function _onDrag(e) {
       e.stopPropagation();
-      e.gesture.preventDefault();
       this._handle.style.left = this._getPosition(e) + 'px';
     }
   }, {
@@ -161,7 +162,7 @@ var SwitchElement = function (_BaseCheckboxElement) {
       }
 
       this.removeEventListener('drag', this._onDrag);
-      document.removeEventListener('release', this._boundOnRelease);
+      document.removeEventListener('release', this._onRelease);
 
       this._handle.style.left = '';
       ModifierUtil.removeModifier(this, 'active');
@@ -180,14 +181,14 @@ var SwitchElement = function (_BaseCheckboxElement) {
       var _this2 = this;
 
       contentReady(this, function () {
-        _this2._input.addEventListener('change', _this2._boundOnChange);
+        _this2._input.addEventListener('change', _this2._onChange);
       });
 
       this.addEventListener('dragstart', this._onDragStart);
       this.addEventListener('hold', this._onHold);
       this.addEventListener('tap', this.click);
       this.addEventListener('click', this._onClick);
-      this._gestureDetector = new GestureDetector(this, { dragMinDistance: 1, holdTimeout: 251 });
+      this._gestureDetector = new GestureDetector(this, { dragMinDistance: 1, holdTimeout: 251, passive: true });
     }
   }, {
     key: 'disconnectedCallback',
@@ -195,7 +196,7 @@ var SwitchElement = function (_BaseCheckboxElement) {
       var _this3 = this;
 
       contentReady(this, function () {
-        _this3._input.removeEventListener('change', _this3._boundOnChange);
+        _this3._input.removeEventListener('change', _this3._onChange);
       });
 
       this.removeEventListener('dragstart', this._onDragStart);
@@ -342,5 +343,5 @@ var SwitchElement = function (_BaseCheckboxElement) {
 export default SwitchElement;
 
 
-ons.elements.Switch = SwitchElement;
+onsElements.Switch = SwitchElement;
 customElements.define('ons-switch', SwitchElement);

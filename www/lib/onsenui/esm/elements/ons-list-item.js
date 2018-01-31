@@ -20,7 +20,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import styler from '../ons/styler';
 import autoStyle from '../ons/autostyle';
@@ -120,7 +120,7 @@ var ListItemElement = function (_BaseElement) {
    * @attribute tappable
    * @type {Boolean}
    * @description
-   *   [en]Makes the element react to taps.[/en]
+   *   [en]Makes the element react to taps. `prevent-tap` attribute can be added to child elements like buttons or inputs to prevent this effect. `ons-*` elements are ignored by default.[/en]
    *   [ja][/ja]
    */
 
@@ -135,7 +135,13 @@ var ListItemElement = function (_BaseElement) {
   function ListItemElement() {
     _classCallCheck(this, ListItemElement);
 
+    // Elements ignored when tapping
     var _this = _possibleConstructorReturn(this, (ListItemElement.__proto__ || _Object$getPrototypeOf(ListItemElement)).call(this));
+
+    var re = /^ons-(?!col$|row$|if$)/i;
+    _this._shouldIgnoreTap = function (e) {
+      return e.hasAttribute('prevent-tap') || re.test(e.tagName);
+    };
 
     contentReady(_this, function () {
       _this._compile();
@@ -225,15 +231,15 @@ var ListItemElement = function (_BaseElement) {
     key: '_setupListeners',
     value: function _setupListeners(add) {
       var action = (add ? 'add' : 'remove') + 'EventListener';
-      this[action]('drag', this._onDrag);
-      this[action]('touchstart', this._onTouch);
-      this[action]('mousedown', this._onTouch);
-      this[action]('touchend', this._onRelease);
-      this[action]('touchmove', this._onRelease);
+      util[action](this, 'touchstart', this._onTouch, { passive: true });
+      util[action](this, 'touchmove', this._onRelease, { passive: true });
       this[action]('touchcancel', this._onRelease);
+      this[action]('touchend', this._onRelease);
+      this[action]('touchleave', this._onRelease);
+      this[action]('drag', this._onDrag);
+      this[action]('mousedown', this._onTouch);
       this[action]('mouseup', this._onRelease);
       this[action]('mouseout', this._onRelease);
-      this[action]('touchleave', this._onRelease);
     }
   }, {
     key: '_onDrag',
@@ -246,9 +252,13 @@ var ListItemElement = function (_BaseElement) {
     }
   }, {
     key: '_onTouch',
-    value: function _onTouch() {
-      if (this.tapped) {
-        return;
+    value: function _onTouch(e) {
+      var _this2 = this;
+
+      if (this.tapped || this !== e.target && (this._shouldIgnoreTap(e.target) || util.findParent(e.target, this._shouldIgnoreTap, function (p) {
+        return p === _this2;
+      }))) {
+        return; // Ignore tap
       }
 
       this.tapped = true;
@@ -285,5 +295,5 @@ var ListItemElement = function (_BaseElement) {
 export default ListItemElement;
 
 
-ons.elements.ListItem = ListItemElement;
+onsElements.ListItem = ListItemElement;
 customElements.define('ons-list-item', ListItemElement);

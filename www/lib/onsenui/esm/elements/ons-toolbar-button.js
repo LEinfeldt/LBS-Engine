@@ -20,15 +20,8 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
-import util from '../ons/util';
-import autoStyle from '../ons/autostyle';
-import ModifierUtil from '../ons/internal/modifier-util';
-import BaseElement from './base/base-element';
-
-var defaultClassName = 'toolbar-button';
-
-var scheme = { '': 'toolbar-button--*' };
+import onsElements from '../ons/elements';
+import BaseButtonElement from './base/base-button';
 
 /**
  * @element ons-toolbar-button
@@ -71,85 +64,70 @@ var scheme = { '': 'toolbar-button--*' };
  * </ons-toolbar>
  */
 
-var ToolbarButtonElement = function (_BaseElement) {
-  _inherits(ToolbarButtonElement, _BaseElement);
-
-  /**
-   * @attribute modifier
-   * @type {String}
-   * @description
-   *   [en]The appearance of the button.[/en]
-   *   [ja]ボタンの表現を指定します。[/ja]
-   */
-
-  /**
-   * @attribute disabled
-   * @description
-   *   [en]Specify if button should be disabled.[/en]
-   *   [ja]ボタンを無効化する場合は指定してください。[/ja]
-   */
+var ToolbarButtonElement = function (_BaseButtonElement) {
+  _inherits(ToolbarButtonElement, _BaseButtonElement);
 
   function ToolbarButtonElement() {
     _classCallCheck(this, ToolbarButtonElement);
 
-    var _this = _possibleConstructorReturn(this, (ToolbarButtonElement.__proto__ || _Object$getPrototypeOf(ToolbarButtonElement)).call(this));
-
-    _this._compile();
-    return _this;
+    return _possibleConstructorReturn(this, (ToolbarButtonElement.__proto__ || _Object$getPrototypeOf(ToolbarButtonElement)).apply(this, arguments));
   }
 
-  /**
-   * @property disabled
-   * @type {Boolean}
-   * @description
-   *   [en]Whether the element is disabled or not.[/en]
-   *   [ja]無効化されている場合に`true`。[/ja]
-   */
-
-
   _createClass(ToolbarButtonElement, [{
-    key: '_compile',
-    value: function _compile() {
-      autoStyle.prepare(this);
+    key: '_scheme',
 
-      this.classList.add(defaultClassName);
 
-      util.updateRipple(this, undefined, { center: '', 'size': 'contain', 'background': 'transparent' });
+    /**
+     * @attribute modifier
+     * @type {String}
+     * @description
+     *   [en]The appearance of the button.[/en]
+     *   [ja]ボタンの表現を指定します。[/ja]
+     */
 
-      ModifierUtil.initModifier(this, scheme);
+    /**
+     * @attribute icon
+     * @type {String}
+     * @description
+     *  [en]Creates an `ons-icon` component with this string.[/en]
+     *  [ja]`ons-icon`コンポーネントを悪性します。[/ja]
+     */
+
+    /**
+     * @attribute disabled
+     * @description
+     *   [en]Specify if button should be disabled.[/en]
+     *   [ja]ボタンを無効化する場合は指定してください。[/ja]
+     */
+
+    /**
+     * @property disabled
+     * @type {Boolean}
+     * @description
+     *   [en]Whether the element is disabled or not.[/en]
+     *   [ja]無効化されている場合に`true`。[/ja]
+     */
+
+    get: function get() {
+      return { '': 'toolbar-button--*' };
     }
   }, {
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      switch (name) {
-        case 'class':
-          util.restoreClass(this, defaultClassName, scheme);
-          break;
-        case 'modifier':
-          ModifierUtil.onModifierChanged(last, current, this, scheme);
-          break;
-      }
+    key: '_defaultClassName',
+    get: function get() {
+      return 'toolbar-button';
     }
   }, {
-    key: 'disabled',
-    set: function set(value) {
-      return util.toggleAttribute(this, 'disabled', value);
-    },
+    key: '_rippleOpt',
     get: function get() {
-      return this.hasAttribute('disabled');
-    }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return ['modifier', 'class'];
+      return [this, undefined, { center: '', 'size': 'contain', 'background': 'transparent' }];
     }
   }]);
 
   return ToolbarButtonElement;
-}(BaseElement);
+}(BaseButtonElement);
 
 export default ToolbarButtonElement;
 
 
-ons.elements.ToolbarButton = ToolbarButtonElement;
+onsElements.ToolbarButton = ToolbarButtonElement;
 customElements.define('ons-toolbar-button', ToolbarButtonElement);

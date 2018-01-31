@@ -22,7 +22,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import BaseElement from './base/base-element';
 import contentReady from '../ons/content-ready';
@@ -278,7 +278,9 @@ var CarouselElement = function (_BaseElement) {
           preChangeHook: this._onChange.bind(this, 'prechange'),
           postChangeHook: this._onChange.bind(this, 'postchange'),
           refreshHook: this._onRefresh.bind(this),
-          scrollHook: this._onSwipe
+          scrollHook: function scrollHook() {
+            return _this2._onSwipe && _this2._onSwipe.apply(_this2, arguments);
+          }
         });
 
         contentReady(this, function () {
@@ -722,5 +724,5 @@ var CarouselElement = function (_BaseElement) {
 export default CarouselElement;
 
 
-ons.elements.Carousel = CarouselElement;
+onsElements.Carousel = CarouselElement;
 customElements.define('ons-carousel', CarouselElement);

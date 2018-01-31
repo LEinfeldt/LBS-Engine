@@ -32,6 +32,7 @@ class App extends React.Component {
         this.handleClickPicture = this.handleClickPicture.bind(this);
         this.handleClickSettings = this.handleClickSettings.bind(this);
         this.renderList = this.renderList.bind(this);
+        this.renderTabs = this.renderTabs.bind(this);
         this.state = {
             isOpen: false,
             //elements used for lifted up state of the config file
@@ -43,7 +44,6 @@ class App extends React.Component {
             draggable: config.map.zoomable,
             index: 0
         };
-        this.modes = ['Map', 'Picture', 'Settings'];
     }
 
     /**
@@ -78,10 +78,18 @@ class App extends React.Component {
         this.setState({layerControl: bool});
     }
 
+    /**
+     * Handle the change of the parameter from the lower level
+     * @param {Boolean} bool value of the change 
+     */
     handleDragMapChange(bool) {
         this.setState({draggable: bool});
     }
 
+    /**
+     * Handle the change of the parameter from the lower level
+     * @param {Boolean} bool value of the change 
+     */
     handleZoomMapChange(bool) {
         this.setState({zoomable: bool});
     }
@@ -89,9 +97,10 @@ class App extends React.Component {
 
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
+        const titles = ['Map', 'Streetview', 'Settings'];
         return (
             <Ons.Toolbar>
-                <div className='center'>{config.app.name}</div>
+                <div className='center'>{titles[this.state.index]}</div>
                 <div className='right'>
                     <Ons.ToolbarButton onClick={this.show}>
                         <Ons.Icon icon='ion-navicon, material:md-menu'></Ons.Icon>
@@ -120,29 +129,66 @@ class App extends React.Component {
         this.setState({index: 2});
     }
 
+    /**
+     * Render the tabs displayed in the bottom to select the mode
+     * State components that are needed are handed over here from the state of this object.
+     */
+    renderTabs() {
+        return [
+            //map element
+            {
+                content: <map.Map 
+                                logging={this.state.logging} 
+                                externalData={this.state.externalData} 
+                                gps={this.state.gps} 
+                                layerControl={this.state.layerControl}
+                                draggable={this.state.draggable}  
+                                zoomable={this.state.zoomable} 
+                                key='map' />,
+                tab: <Ons.Tab label='Map' icon='md-map' key='map' />
+            },
+            //pictureView element
+            {
+                content: <pictureView.PictureView 
+                                logging={this.state.logging} 
+                                externalData={this.state.externalData} 
+                                gps={this.state.gps} 
+                                layerControl={this.state.layerControl}
+                                draggable={this.state.draggable}  
+                                zoomable={this.state.zoomable} 
+                                key='picture' />,
+                tab: <Ons.Tab label='Streetview' icon='md-image' key='picture' />
+            },
+            //settings element, with no tab displayed in the tabbar, as it is accessible via the sidebar
+            {
+                content: <settings.Settings 
+                                onLoggingChange={this.handleLoggingChange} 
+                                onDataChange={this.handleExternalDataChange} 
+                                onGpsChange={this.handleGpsChange}
+                                onLayerControlChange={this.handleLayerControlChange} 
+                                onDragMapChange={this.handleDragMapChange} 
+                                onZoomMapChange={this.handleZoomMapChange}
+                                logging={this.state.logging} 
+                                externalData={this.state.externalData} 
+                                gps={this.state.gps} 
+                                layerControl={this.state.layerControl}
+                                draggable={this.state.draggable} 
+                                zoomable={this.state.zoomable} 
+                                key='settings' />,
+                tab: <Ons.Tab label='Settings' icon='md-settings' key='settings' style={{display: 'none'}}/>
+            },
+            //ship  around an error in current onsen release
+            {
+                content: <div key='placeholder' />,
+                tab: null
+            }
+        ]
+    }
+
+    //render the list displayed in the sidebar
     renderList() {
         return (
-            <Ons.List renderHeader={() => <Ons.ListHeader>Mode</Ons.ListHeader>} >
-                <Ons.ListItem 
-                    tappable={true}
-                    onClick={this.handleClickMap}>
-                    <div className='left'>
-                        <Ons.Icon icon='md-map'/>
-                    </div>
-                    <div className='center'>
-                        Map
-                    </div>
-                </Ons.ListItem>
-                <Ons.ListItem 
-                    tappable={true}
-                    onClick={this.handleClickPicture}>
-                        <div className='left'>
-                            <Ons.Icon icon='md-image'/>
-                        </div>
-                        <div className='center'>
-                            Picture
-                        </div>
-                </Ons.ListItem>
+            <Ons.List>
                 <Ons.ListItem 
                     tappable={true}
                     onClick={this.handleClickSettings}>
@@ -156,65 +202,40 @@ class App extends React.Component {
             </Ons.List>
         )
     }
+
     //render sidebars and toolbar
     render() {
-        
-        if(this.state.index == 0) {
-            return (
-                <Ons.Splitter>
-                <Ons.SplitterSide side='right' width={'50%'} style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}} 
-                    swipable={true} collapse={true} isOpen={this.state.isOpen} onClose={this.hide} onOpen={this.show}>
+
+        return (
+            <Ons.Splitter>
+                <Ons.SplitterSide 
+                    side='right' 
+                    width={'50%'} 
+                    style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}}
+                    swipable={true} 
+                    collapse={true} 
+                    isOpen={this.state.isOpen} 
+                    onClose={this.hide} 
+                    onOpen={this.show}>
                     <Ons.Page>
                         {this.renderList()}
                     </Ons.Page>
                 </Ons.SplitterSide>
-                <Ons.SplitterContent>
                 <Ons.Page renderToolbar={this.renderToolbar}>
-                    <map.Map logging={this.state.logging} externalData={this.state.externalData} gps={this.state.gps} layerControl={this.state.layerControl}
-                        draggable={this.state.draggable}  zoomable={this.state.zoomable} />
+                    <Ons.Tabbar 
+                        swipable={true}
+                        position='bottom'
+                        index={this.state.index}
+                        onPreChange={(event) => 
+                            {
+                                if(event.index != this.state.index) {
+                                    this.setState({index: event.index});
+                                }
+                            }}
+                        renderTabs={this.renderTabs} />
                 </Ons.Page>
-                </Ons.SplitterContent>
             </Ons.Splitter>
-            )
-        }
-        else if(this.state.index == 1) {
-            return (
-                <Ons.Splitter>
-                    <Ons.SplitterSide side='right' width={'50%'} style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}} 
-                        swipable={true} collapse={true} isOpen={this.state.isOpen} onClose={this.hide} onOpen={this.show}>
-                        <Ons.Page>
-                           {this.renderList()}
-                        </Ons.Page>
-                    </Ons.SplitterSide>
-                    <Ons.SplitterContent>
-                    <Ons.Page renderToolbar={this.renderToolbar}>
-                        <pictureView.PictureView logging={this.state.logging} externalData={this.state.externalData} gps={this.state.gps} layerControl={this.state.layerControl}
-                            draggable={this.state.draggable}  zoomable={this.state.zoomable} />
-                    </Ons.Page>
-                    </Ons.SplitterContent>
-                </Ons.Splitter>
-            )
-        }
-        else {
-            return (
-                <Ons.Splitter>
-                    <Ons.SplitterSide side='right' width={'50%'} style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}} 
-                        swipable={true} collapse={true} isOpen={this.state.isOpen} onClose={this.hide} onOpen={this.show}>
-                        <Ons.Page>
-                            {this.renderList()}
-                        </Ons.Page>
-                    </Ons.SplitterSide>
-                    <Ons.SplitterContent>
-                    <Ons.Page renderToolbar={this.renderToolbar}>
-                        <settings.Settings onLoggingChange={this.handleLoggingChange} onDataChange={this.handleExternalDataChange} onGpsChange={this.handleGpsChange}
-                            onLayerControlChange={this.handleLayerControlChange} onDragMapChange={this.handleDragMapChange} onZoomMapChange={this.handleZoomMapChange}
-                            logging={this.state.logging} externalData={this.state.externalData} gps={this.state.gps} layerControl={this.state.layerControl}
-                            draggable={this.state.draggable} zoomable={this.state.zoomable}/>
-                    </Ons.Page>
-                    </Ons.SplitterContent>
-                </Ons.Splitter>
-            )
-        }
+        )
     }
 }
 

@@ -18,16 +18,53 @@ limitations under the License.
 
 */
 
+import onsElements from './elements';
 import styler from './styler';
 import internal from './internal';
 import autoStyle from './autostyle';
 import ModifierUtil from './internal/modifier-util';
 import animationOptionsParse from './animation-options-parser';
+import platform from './platform';
 
 var util = {};
+var errorPrefix = '[Onsen UI]';
 
 util.globals = {
-  fabOffset: 0
+  fabOffset: 0,
+  errorPrefix: errorPrefix,
+  supportsPassive: false
+};
+
+platform._runOnActualPlatform(function () {
+  util.globals.actualMobileOS = platform.getMobileOS();
+  util.globals.isUIWebView = platform.isUIWebView();
+  util.globals.isWKWebView = platform.isWKWebView();
+});
+
+try {
+  var opts = Object.defineProperty({}, 'passive', {
+    get: function get() {
+      util.globals.supportsPassive = true;
+    }
+  });
+  window.addEventListener('testPassive', null, opts);
+  window.removeEventListener('testPassive', null, opts);
+} catch (e) {
+  null;
+}
+
+/**
+ * @param {Element} el Target
+ * @param {String} name Event name
+ * @param {Function} handler Event handler
+ * @param {Object} [opt] Event options (passive, capture...)
+ * @param {Boolean} [isGD] If comes from GestureDetector. Just for testing.
+ */
+util.addEventListener = function (el, name, handler, opt, isGD) {
+  el.addEventListener(name, handler, util.globals.supportsPassive ? opt : (opt || {}).capture);
+};
+util.removeEventListener = function (el, name, handler, opt, isGD) {
+  el.removeEventListener(name, handler, util.globals.supportsPassive ? opt : (opt || {}).capture);
 };
 
 /**
@@ -188,7 +225,7 @@ util.createElement = function (html) {
   }
 
   if (wrapper.children.length > 1) {
-    throw new Error('"html" must be one wrapper element.');
+    throw new Error(errorPrefix + ' "html" must be one wrapper element.');
   }
 
   var element = wrapper.children[0];
@@ -504,30 +541,59 @@ util.defer = function () {
  * @param {*} arguments to console.warn
  */
 util.warn = function () {
+  for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+    args[_key2] = arguments[_key2];
+  }
+
   if (!internal.config.warningsDisabled) {
     var _console;
 
-    (_console = console).warn.apply(_console, arguments);
+    (_console = console).warn.apply(_console, [errorPrefix].concat(args));
+  }
+};
+
+var prevent = function prevent(e) {
+  return e.cancelable && e.preventDefault();
+};
+
+/**
+ * Prevent scrolling while draging horizontally on iOS.
+ *
+ * @param {gd} GestureDetector instance
+ */
+util.iosPreventScroll = function (gd) {
+  if (util.globals.actualMobileOS === 'ios') {
+    var clean = function clean(e) {
+      gd.off('touchmove', prevent);
+      gd.off('dragend', clean);
+    };
+
+    gd.on('touchmove', prevent);
+    gd.on('dragend', clean);
   }
 };
 
 /**
- * Prevent scrolling while draging horizontally.
+ * Prevents scroll in underlying pages on iOS. See #2220 #2274 #1949
  *
- * @param {gd} GestureDetector instance
+ * @param {el} HTMLElement that prevents the events
+ * @param {add} Boolean Add or remove event listeners
  */
-util.preventScroll = function (gd) {
-  var prevent = function prevent(e) {
-    return e.cancelable && e.preventDefault();
-  };
-
-  var clean = function clean(e) {
-    gd.off('touchmove', prevent);
-    gd.off('dragend', clean);
-  };
-
-  gd.on('touchmove', prevent);
-  gd.on('dragend', clean);
+util.iosPageScrollFix = function (add) {
+  // Full fix - May cause issues with UIWebView's momentum scroll
+  if (util.globals.actualMobileOS === 'ios') {
+    document.body.classList.toggle('ons-ios-scroll', add); // Allows custom and localized fixes (#2274)
+    if (!util.globals.isUIWebView || internal.config.forceUIWebViewScrollFix) {
+      document.body.classList.toggle('ons-ios-scroll-fix', add);
+    }
+  }
+};
+util.iosMaskScrollFix = function (el, add) {
+  // Half fix - only prevents scroll on masks
+  if (util.globals.isUIWebView) {
+    var action = (add ? 'add' : 'remove') + 'EventListener';
+    el[action]('touchmove', prevent, false);
+  }
 };
 
 /**
@@ -537,6 +603,18 @@ util.preventScroll = function (gd) {
  */
 util.isValidGesture = function (event) {
   return event.gesture !== undefined && (event.gesture.distance <= 15 || event.gesture.deltaTime <= 100);
+};
+
+util.checkMissingImport = function () {
+  for (var _len3 = arguments.length, elementNames = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+    elementNames[_key3] = arguments[_key3];
+  }
+
+  elementNames.forEach(function (name) {
+    if (!onsElements[name]) {
+      throw new Error(errorPrefix + ' Ons' + name + ' is required but was not imported (Custom Elements).');
+    }
+  });
 };
 
 export default util;

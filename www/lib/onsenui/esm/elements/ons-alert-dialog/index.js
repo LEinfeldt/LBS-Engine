@@ -20,7 +20,7 @@ limitations under the License.
 
 */
 
-import ons from '../../ons';
+import onsElements from '../../ons/elements';
 import util from '../../ons/util';
 import autoStyle from '../../ons/autostyle';
 import ModifierUtil from '../../ons/internal/modifier-util';
@@ -62,7 +62,7 @@ var _animatorDict = {
  *   [en]
  *     Alert dialog that is displayed on top of the current screen. Useful for displaying questions, warnings or error messages to the user. The title, content and buttons can be easily customized and it will automatically switch style based on the platform.
  *
- *     To use the element it can either be attached directly to the `<body>` element or dynamically created from a template using the `ons.createAlertDialog(template)` utility function and the `<ons-template>` tag.
+ *     To use the element it can either be attached directly to the `<body>` element or dynamically created from a template using the `ons.createAlertDialog(template)` utility function and the `<template>` tag.
  *   [/en]
  *   [ja]
  *     現在のスクリーンの上に表示するアラートダイアログです。ユーザに対する問いかけ、警告、エラーメッセージを表示するのに利用できます。タイトルやコンテンツやボタンは簡単にカスタマイズでき、実行しているプラットフォームに併せてスタイルが自動的に切り替わります。
@@ -429,5 +429,5 @@ var AlertDialogElement = function (_BaseDialogElement) {
 export default AlertDialogElement;
 
 
-ons.elements.AlertDialog = AlertDialogElement;
+onsElements.AlertDialog = AlertDialogElement;
 customElements.define('ons-alert-dialog', AlertDialogElement);

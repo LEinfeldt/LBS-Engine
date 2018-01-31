@@ -17,7 +17,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import styler from '../ons/styler';
 import autoStyle from '../ons/autostyle';
@@ -296,5 +296,5 @@ var FabElement = function (_BaseElement) {
 export default FabElement;
 
 
-ons.elements.Fab = FabElement;
+onsElements.Fab = FabElement;
 customElements.define('ons-fab', FabElement);

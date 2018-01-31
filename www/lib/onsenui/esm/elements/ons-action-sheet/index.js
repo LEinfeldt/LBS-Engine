@@ -22,7 +22,7 @@ limitations under the License.
 
 */
 
-import ons from '../../ons';
+import onsElements from '../../ons/elements';
 import util from '../../ons/util';
 import autoStyle from '../../ons/autostyle';
 import ModifierUtil from '../../ons/internal/modifier-util';
@@ -52,7 +52,7 @@ var _animatorDict = {
  *   [en]
  *     Action/bottom sheet that is displayed on top of current screen.
  *
- *     This element can either be attached directly to the `<body>` or dynamically created from a template using the `ons.createElement(template, { append: true })` utility function and the `<ons-template>` tag.
+ *     This element can either be attached directly to the `<body>` or dynamically created from a template using the `ons.createElement(template, { append: true })` utility function and the `<template>` tag.
  *
  *     The action sheet is useful for displaying a list of options and asking the user to make a decision. A `ons-action-sheet-button` is provided for this purpose, although it can contain any type of content.
  *
@@ -61,7 +61,7 @@ var _animatorDict = {
  *   [ja]
  *     アクションシート、もしくはボトムシートを現在のスクリーン上に表示します。
  *
- *     この要素は、`<body>`要素に直接アタッチされるか、もしくは`ons.createElement(template, { append: true })`と`<ons-template>`タグを使ってテンプレートから動的に生成されます。
+ *     この要素は、`<body>`要素に直接アタッチされるか、もしくは`ons.createElement(template, { append: true })`と`<template>`タグを使ってテンプレートから動的に生成されます。
  *
  *     アクションシートは、選択肢のリストを表示してユーザーに尋ねるのに便利です。`ons-action-sheet-button`は、この要素の中に置くために提供されていますが、それ以外にも他のどのような要素を含むことができます。
  *
@@ -417,5 +417,5 @@ var ActionSheetElement = function (_BaseDialogElement) {
 export default ActionSheetElement;
 
 
-ons.elements.ActionSheet = ActionSheetElement;
+onsElements.ActionSheet = ActionSheetElement;
 customElements.define('ons-action-sheet', ActionSheetElement);

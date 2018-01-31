@@ -20,15 +20,8 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
-import util from '../ons/util';
-import autoStyle from '../ons/autostyle';
-import ModifierUtil from '../ons/internal/modifier-util';
-import BaseElement from './base/base-element';
-
-var scheme = { '': 'button--*' };
-
-var defaultClassName = 'button';
+import onsElements from '../ons/elements';
+import BaseButtonElement from './base/base-button';
 
 /**
  * @element ons-button
@@ -77,54 +70,40 @@ var defaultClassName = 'button';
  * </ons-button>
  */
 
-var ButtonElement = function (_BaseElement) {
-  _inherits(ButtonElement, _BaseElement);
-
-  /**
-   * @attribute modifier
-   * @type {String}
-   * @description
-   *  [en]The appearance of the button.[/en]
-   *  [ja]ボタンの表現を指定します。[/ja]
-   */
-
-  /**
-   * @attribute ripple
-   * @description
-   *  [en]If this attribute is defined, the button will have a ripple effect.[/en]
-   *  [ja][/ja]
-   */
-
-  /**
-   * @attribute disabled
-   * @description
-   *   [en]Specify if button should be disabled.[/en]
-   *   [ja]ボタンを無効化する場合は指定します。[/ja]
-   */
+var ButtonElement = function (_BaseButtonElement) {
+  _inherits(ButtonElement, _BaseButtonElement);
 
   function ButtonElement() {
     _classCallCheck(this, ButtonElement);
 
-    var _this = _possibleConstructorReturn(this, (ButtonElement.__proto__ || _Object$getPrototypeOf(ButtonElement)).call(this));
-
-    _this._compile();
-    return _this;
+    return _possibleConstructorReturn(this, (ButtonElement.__proto__ || _Object$getPrototypeOf(ButtonElement)).apply(this, arguments));
   }
 
   _createClass(ButtonElement, [{
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      switch (name) {
-        case 'class':
-          util.restoreClass(this, defaultClassName, scheme);
-          break;
-        case 'modifier':
-          ModifierUtil.onModifierChanged(last, current, this, scheme);
-          break;
-        case 'ripple':
-          this._updateRipple();
-      }
-    }
+    key: '_scheme',
+
+
+    /**
+     * @attribute modifier
+     * @type {String}
+     * @description
+     *  [en]The appearance of the button.[/en]
+     *  [ja]ボタンの表現を指定します。[/ja]
+     */
+
+    /**
+     * @attribute ripple
+     * @description
+     *  [en]If this attribute is defined, the button will have a ripple effect.[/en]
+     *  [ja][/ja]
+     */
+
+    /**
+     * @attribute disabled
+     * @description
+     *   [en]Specify if button should be disabled.[/en]
+     *   [ja]ボタンを無効化する場合は指定します。[/ja]
+     */
 
     /**
      * @property disabled
@@ -134,42 +113,21 @@ var ButtonElement = function (_BaseElement) {
      *   [ja]無効化されている場合に`true`。[/ja]
      */
 
-  }, {
-    key: '_compile',
-    value: function _compile() {
-      autoStyle.prepare(this);
-
-      this.classList.add(defaultClassName);
-
-      this._updateRipple();
-
-      ModifierUtil.initModifier(this, scheme);
-    }
-  }, {
-    key: '_updateRipple',
-    value: function _updateRipple() {
-      util.updateRipple(this);
-    }
-  }, {
-    key: 'disabled',
-    set: function set(value) {
-      return util.toggleAttribute(this, 'disabled', value);
-    },
     get: function get() {
-      return this.hasAttribute('disabled');
+      return { '': 'button--*' };
     }
-  }], [{
-    key: 'observedAttributes',
+  }, {
+    key: '_defaultClassName',
     get: function get() {
-      return ['modifier', 'ripple', 'class'];
+      return 'button';
     }
   }]);
 
   return ButtonElement;
-}(BaseElement);
+}(BaseButtonElement);
 
 export default ButtonElement;
 
 
-ons.elements.Button = ButtonElement;
+onsElements.Button = ButtonElement;
 customElements.define('ons-button', ButtonElement);

@@ -47,6 +47,8 @@ var SwipeReveal = function () {
     };
 
     this.handleGesture = this.handleGesture.bind(this);
+
+    this._shouldFixScroll = util.globals.actualMobileOS === 'ios';
   }
 
   _createClass(SwipeReveal, [{
@@ -55,7 +57,7 @@ var SwipeReveal = function () {
       var swipeable = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.element.hasAttribute('swipeable');
 
       if (!this.gestureDetector) {
-        this.gestureDetector = new GestureDetector(this.elementHandler, { dragMinDistance: 1 });
+        this.gestureDetector = new GestureDetector(this.elementHandler, { dragMinDistance: 1, passive: !this._shouldFixScroll });
       }
 
       var action = swipeable ? 'on' : 'off';
@@ -89,14 +91,13 @@ var SwipeReveal = function () {
         this._width = widthToPx(this.element.style.width || '100%');
         this._startDistance = this._distance = !(this.isInitialState instanceof Function) || this.isInitialState() ? 0 : this._width;
 
-        util.preventScroll(this.gestureDetector);
+        util.iosPreventScroll(this.gestureDetector);
       }
     }
   }, {
     key: 'onDrag',
     value: function onDrag(event) {
       event.stopPropagation();
-      event.gesture.preventDefault();
 
       var delta = this.getSide() === 'left' ? event.gesture.deltaX : -event.gesture.deltaX;
       var distance = Math.max(0, Math.min(this._width, this._startDistance + delta));

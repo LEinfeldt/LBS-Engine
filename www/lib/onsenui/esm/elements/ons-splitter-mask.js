@@ -20,7 +20,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import BaseElement from './base/base-element';
 import util from '../ons/util';
 import contentReady from '../ons/content-ready';
@@ -57,24 +57,19 @@ var SplitterMaskElement = function (_BaseElement) {
       event.stopPropagation();
     }
   }, {
-    key: '_preventScroll',
-    value: function _preventScroll(e) {
-      e.cancelable && e.preventDefault(); // Fix for iOS. Prevents scrolling content behind mask.
-    }
-  }, {
     key: 'attributeChangedCallback',
     value: function attributeChangedCallback(name, last, current) {}
   }, {
     key: 'connectedCallback',
     value: function connectedCallback() {
       this.addEventListener('click', this._boundOnClick);
-      this.addEventListener('touchmove', this._preventScroll);
+      util.iosMaskScrollFix(this, true);
     }
   }, {
     key: 'disconnectedCallback',
     value: function disconnectedCallback() {
       this.removeEventListener('click', this._boundOnClick);
-      this.removeEventListener('touchmove', this._preventScroll);
+      util.iosMaskScrollFix(this, false);
     }
   }], [{
     key: 'observedAttributes',
@@ -89,5 +84,5 @@ var SplitterMaskElement = function (_BaseElement) {
 export default SplitterMaskElement;
 
 
-ons.elements.SplitterMask = SplitterMaskElement;
+onsElements.SplitterMask = SplitterMaskElement;
 customElements.define('ons-splitter-mask', SplitterMaskElement);

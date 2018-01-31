@@ -22,7 +22,7 @@ limitations under the License.
 
 */
 
-import ons from '../../ons';
+import onsElements from '../../ons/elements';
 import util from '../../ons/util';
 import ModifierUtil from '../../ons/internal/modifier-util';
 import AnimatorFactory from '../../ons/internal/animator-factory';
@@ -209,13 +209,11 @@ var ModalElement = function (_BaseDialogElement) {
     key: 'connectedCallback',
     value: function connectedCallback() {
       _get(ModalElement.prototype.__proto__ || _Object$getPrototypeOf(ModalElement.prototype), 'connectedCallback', this).call(this);
-      this.addEventListener('touchmove', _get(ModalElement.prototype.__proto__ || _Object$getPrototypeOf(ModalElement.prototype), '_preventScroll', this), false); // iOS fix
     }
   }, {
     key: 'disconnectedCallback',
     value: function disconnectedCallback() {
       _get(ModalElement.prototype.__proto__ || _Object$getPrototypeOf(ModalElement.prototype), 'disconnectedCallback', this).call(this);
-      this.removeEventListener('touchmove', _get(ModalElement.prototype.__proto__ || _Object$getPrototypeOf(ModalElement.prototype), '_preventScroll', this), false);
     }
 
     /**
@@ -344,5 +342,5 @@ var ModalElement = function (_BaseDialogElement) {
 export default ModalElement;
 
 
-ons.elements.Modal = ModalElement;
+onsElements.Modal = ModalElement;
 customElements.define('ons-modal', ModalElement);

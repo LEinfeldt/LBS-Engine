@@ -51,15 +51,15 @@ var Swiper = function () {
     };
 
     // Prevent clicks only on desktop
-    this.shouldBlock = platform._runOnActualPlatform(function () {
-      return platform.getMobileOS();
-    }) === 'other';
+    this.shouldBlock = util.globals.actualMobileOS === 'other';
 
     // Bind handlers
     this.onDragStart = this.onDragStart.bind(this);
     this.onDrag = this.onDrag.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
     this.onResize = this.onResize.bind(this);
+
+    this._shouldFixScroll = util.globals.actualMobileOS === 'ios';
   }
 
   _createClass(Swiper, [{
@@ -88,7 +88,7 @@ var Swiper = function () {
       this.blocker.classList.add('ons-swiper-blocker');
 
       // Setup listeners
-      this._gestureDetector = new GestureDetector(this.getElement(), { dragMinDistance: 1, dragLockToAxis: true });
+      this._gestureDetector = new GestureDetector(this.getElement(), { dragMinDistance: 1, dragLockToAxis: true, passive: !this._shouldFixScroll });
       this._mutationObserver = new MutationObserver(function () {
         return _this2.refresh();
       });
@@ -202,6 +202,10 @@ var Swiper = function () {
       var count = this.itemCount,
           size = this.itemNumSize;
 
+      if (this.itemNumSize === 0 || !util.isInteger(scroll)) {
+        return this._lastActiveIndex;
+      }
+
       if (scroll <= 0) {
         return 0;
       }
@@ -288,7 +292,7 @@ var Swiper = function () {
             event.consumed = true;
             _this4._started = true; // Avoid starting drag from outside
             _this4.shouldBlock && _this4.toggleBlocker(true);
-            util.preventScroll(_this4._gestureDetector);
+            util.iosPreventScroll(_this4._gestureDetector);
           };
 
           // Let parent elements consume the gesture or consume it right away
@@ -451,8 +455,12 @@ var Swiper = function () {
       this._reset();
       this._updateLayout();
 
-      var scroll = this._normalizeScroll(this._scroll);
-      scroll !== this._scroll ? this._killOverScroll(scroll) : this._changeTo(scroll);
+      if (util.isInteger(this._scroll)) {
+        var scroll = this._normalizeScroll(this._scroll);
+        scroll !== this._scroll ? this._killOverScroll(scroll) : this._changeTo(scroll);
+      } else {
+        this._setupInitialIndex();
+      }
 
       this.refreshHook();
     }

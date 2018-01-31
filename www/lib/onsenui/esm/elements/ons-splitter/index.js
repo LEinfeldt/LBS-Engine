@@ -20,7 +20,7 @@ limitations under the License.
 
 */
 
-import ons from '../../ons';
+import onsElements from '../../ons/elements';
 import util from '../../ons/util';
 import ModifierUtil from '../../ons/internal/modifier-util';
 import AnimatorFactory from '../../ons/internal/animator-factory';
@@ -286,5 +286,5 @@ var SplitterElement = function (_BaseElement) {
 export default SplitterElement;
 
 
-ons.elements.Splitter = SplitterElement;
+onsElements.Splitter = SplitterElement;
 customElements.define('ons-splitter', SplitterElement);

@@ -1,6 +1,5 @@
 import _Object$defineProperty from 'babel-runtime/core-js/object/define-property';
 import _setImmediate from 'babel-runtime/core-js/set-immediate';
-import _Set from 'babel-runtime/core-js/set';
 import _Object$getPrototypeOf from 'babel-runtime/core-js/object/get-prototype-of';
 import _classCallCheck from 'babel-runtime/helpers/classCallCheck';
 import _createClass from 'babel-runtime/helpers/createClass';
@@ -23,7 +22,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import internal from '../ons/internal';
 import autoStyle from '../ons/autostyle';
@@ -161,12 +160,10 @@ var PageElement = function (_BaseElement) {
 
     _this._deriveHooks();
 
+    _this._defaultClassName = defaultClassName;
     _this.classList.add(defaultClassName);
-    _this._initialized = false;
 
-    _this._contentObserver = new MutationObserver(function () {
-      _this._tryToSuppressLayerCreation();
-    });
+    _this._initialized = false;
 
     contentReady(_this, function () {
       _this._compile();
@@ -174,33 +171,11 @@ var PageElement = function (_BaseElement) {
       _this._isShown = false;
       _this._contentElement = _this._getContentElement();
       _this._backgroundElement = _this._getBackgroundElement();
-
-      _this._contentObserver.observe(_this._contentElement, { childList: true });
-      _this._tryToSuppressLayerCreation();
     });
     return _this;
   }
 
   _createClass(PageElement, [{
-    key: '_tryToSuppressLayerCreation',
-    value: function _tryToSuppressLayerCreation() {
-      if (!this._contentElement) {
-        return;
-      }
-
-      var content = this._contentElement;
-      var scrollerSet = new _Set(['ons-navigator', 'ons-page', 'ons-tabbar', 'ons-splitter']);
-
-      var shouldSuppress = content.children.length === 1 && scrollerSet.has(content.children[0].nodeName.toLowerCase());
-
-      // If content element has only one element and the element has scroll content, there is no need for layer creation in this content element.
-      if (shouldSuppress) {
-        content.classList.add('page__content--suppress-layer-creation');
-      } else {
-        content.classList.remove('page__content--suppress-layer-creation');
-      }
-    }
-  }, {
     key: '_compile',
     value: function _compile() {
       var _this2 = this;
@@ -226,9 +201,9 @@ var PageElement = function (_BaseElement) {
       this._tryToFillStatusBar(content); // Must run before child pages try to fill status bar.
       this.insertBefore(content, background.nextSibling); // Can trigger attached connectedCallbacks
 
-      // Make wrapper pages transparent for animations
-      if (!background.style.backgroundColor && (!toolbar || !util.hasModifier(toolbar, 'transparent')) && content.children.length === 1 && util.isPageControl(content.children[0])) {
-        background.style.backgroundColor = 'transparent';
+      if ((!toolbar || !util.hasModifier(toolbar, 'transparent')) && content.children.length === 1 && util.isPageControl(content.children[0])) {
+        this._defaultClassName += ' page--wrapper';
+        this.attributeChangedCallback('class');
       }
 
       ModifierUtil.initModifier(this, scheme);
@@ -372,7 +347,7 @@ var PageElement = function (_BaseElement) {
 
       switch (name) {
         case 'class':
-          util.restoreClass(this, defaultClassName, scheme);
+          util.restoreClass(this, this._defaultClassName, scheme);
           break;
         case 'modifier':
           ModifierUtil.onModifierChanged(last, current, this, scheme);
@@ -395,6 +370,7 @@ var PageElement = function (_BaseElement) {
     value: function _show() {
       if (!this._isShown && util.isAttached(this)) {
         this._isShown = true;
+        this.setAttribute('shown', '');
         this.onShow && this.onShow();
         util.triggerElementEvent(this, 'show');
         util.propagateAction(this, '_show');
@@ -405,6 +381,7 @@ var PageElement = function (_BaseElement) {
     value: function _hide() {
       if (this._isShown) {
         this._isShown = false;
+        this.removeAttribute('shown');
         this.onHide && this.onHide();
         util.triggerElementEvent(this, 'hide');
         util.propagateAction(this, '_hide');
@@ -434,6 +411,7 @@ var PageElement = function (_BaseElement) {
       this.constructor.events.forEach(function (event) {
         var key = 'on' + event.charAt(0).toUpperCase() + event.slice(1);
         _Object$defineProperty(_this7, key, {
+          configurable: true,
           enumerable: true,
           get: function get() {
             return _this7['_' + key];
@@ -540,5 +518,5 @@ var PageElement = function (_BaseElement) {
 export default PageElement;
 
 
-ons.elements.Page = PageElement;
+onsElements.Page = PageElement;
 customElements.define('ons-page', PageElement);

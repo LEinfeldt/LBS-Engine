@@ -19,6 +19,7 @@ limitations under the License.
 */
 
 import util from './util';
+import elements from './elements';
 import animit from './animit';
 import GestureDetector from './gesture-detector';
 import platform from './platform';
@@ -43,7 +44,7 @@ import { defaultPageLoader, PageLoader } from './page-loader';
 var ons = {
   animit: animit,
   defaultPageLoader: defaultPageLoader,
-  elements: {},
+  elements: elements,
   GestureDetector: GestureDetector,
   modifier: modifier,
   notification: notification,
@@ -268,10 +269,22 @@ ons.enableAutoStyling = autoStyle.enable;
  *   [ja][/ja]
  */
 ons.disableIconAutoPrefix = function () {
-  if (!ons.elements.Icon) {
-    throw new Error('Expected \'ons-icon\' Custom Element to be registered before calling this method.');
-  }
-  ons.elements.Icon.setAutoPrefix(false);
+  util.checkMissingImport('Icon');
+  elements.Icon.setAutoPrefix(false);
+};
+
+/**
+ * @method forceUIWebViewScrollFix
+ * @signature forceUIWebViewScrollFix()
+ * @param {Boolean} force Enable or disable the fix.
+ * @description
+ *   [en]Applies a fix for iOS UIWebView which prevents scroll events jumping to pages under the top layer. This may visually affect normal scrolling of UIWebView if you open a dialog/menu before the scroll momentum finished. Disabled by default.[/en]
+ *   [ja][/ja]
+ */
+ons.forceUIWebViewScrollFix = function () {
+  var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+  internal.config.forceUIWebViewScrollFix = force;
 };
 
 /**
@@ -326,7 +339,7 @@ ons.preload = function () {
  * @method createElement
  * @signature createElement(template, options)
  * @param {String} template
- *   [en]Either an HTML file path, an `<ons-template>` id or an HTML string such as `'<div id="foo">hoge</div>'`.[/en]
+ *   [en]Either an HTML file path, a `<template>` id or an HTML string such as `'<div id="foo">hoge</div>'`.[/en]
  *   [ja][/ja]
  * @param {Object} [options]
  *   [en]Parameter object.[/en]
@@ -369,8 +382,8 @@ ons.createElement = function (template) {
  * @method createPopover
  * @signature createPopover(page, [options])
  * @param {String} page
- *   [en]Page name. Can be either an HTML file or an <ons-template> containing a <ons-dialog> component.[/en]
- *   [ja]pageのURLか、もしくはons-templateで宣言したテンプレートのid属性の値を指定できます。[/ja]
+ *   [en]Page name. Can be either an HTML file or a <template> containing a <ons-dialog> component.[/en]
+ *   [ja]pageのURLか、もしくは`<template>`で宣言したテンプレートのid属性の値を指定できます。[/ja]
  * @param {Object} [options]
  *   [en]Parameter object.[/en]
  *   [ja]オプションを指定するオブジェクト。[/ja]
@@ -388,8 +401,8 @@ ons.createElement = function (template) {
  * @method createDialog
  * @signature createDialog(page, [options])
  * @param {String} page
- *   [en]Page name. Can be either an HTML file or an <ons-template> containing a <ons-dialog> component.[/en]
- *   [ja]pageのURLか、もしくはons-templateで宣言したテンプレートのid属性の値を指定できます。[/ja]
+ *   [en]Page name. Can be either an HTML file or an `<template>` containing a <ons-dialog> component.[/en]
+ *   [ja]pageのURLか、もしくは`<template>`で宣言したテンプレートのid属性の値を指定できます。[/ja]
  * @param {Object} [options]
  *   [en]Parameter object.[/en]
  *   [ja]オプションを指定するオブジェクト。[/ja]
@@ -404,8 +417,8 @@ ons.createElement = function (template) {
  * @method createAlertDialog
  * @signature createAlertDialog(page, [options])
  * @param {String} page
- *   [en]Page name. Can be either an HTML file or an <ons-template> containing a <ons-alert-dialog> component.[/en]
- *   [ja]pageのURLか、もしくはons-templateで宣言したテンプレートのid属性の値を指定できます。[/ja]
+ *   [en]Page name. Can be either an HTML file or an `<template>` containing a <ons-alert-dialog> component.[/en]
+ *   [ja]pageのURLか、もしくは`<template>`で宣言したテンプレートのid属性の値を指定できます。[/ja]
  * @param {Object} [options]
  *   [en]Parameter object.[/en]
  *   [ja]オプションを指定するオブジェクト。[/ja]
@@ -465,7 +478,7 @@ ons.openActionSheet = actionSheet;
  * @signature resolveLoadingPlaceholder(page)
  * @param {String} page
  *   [en]Page name. Can be either an HTML file or a `<template>` id.[/en]
- *   [ja]pageのURLか、もしくはons-templateで宣言したテンプレートのid属性の値を指定できます。[/ja]
+ *   [ja]pageのURLか、もしくは`<template>`で宣言したテンプレートのid属性の値を指定できます。[/ja]
  * @description
  *   [en]If no page is defined for the `ons-loading-placeholder` attribute it will wait for this method being called before loading the page.[/en]
  *   [ja]ons-loading-placeholderの属性値としてページが指定されていない場合は、ページロード前に呼ばれるons.resolveLoadingPlaceholder処理が行われるまで表示されません。[/ja]

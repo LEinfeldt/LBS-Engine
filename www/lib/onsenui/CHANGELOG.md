@@ -2,6 +2,66 @@
 CHANGELOG
 ====
 
+2.9.1
+----
+
+ ### Bug Fixes
+
+ * ons-tab: Ensure `click` event listener is added to nested tabbars.
+ * ons-navigator: It now uses default `options` property also for `popPage`.
+ * ons.notification: `toast` method error.
+
+2.9.0
+----
+
+ ### New Features
+
+ * :tada: Use passive event listeners whenever possible. PWA score++.
+ * ons-navigator: `popPage` method now supports `options.times` to pop several pages with one single animation.
+ * ons-toolbar-button: Added `icon` attribute to automatically create an `ons-icon` element.
+
+ ### Bug Fixes
+
+ * :tada: fastclick: Use Onsen UI fork of FastClick. Fixes [#2254](https://github.com/OnsenUI/OnsenUI/issues/2254), [#2304](https://github.com/OnsenUI/OnsenUI/issues/2304).
+ * ons-tab: Fixed [#2307](https://github.com/OnsenUI/OnsenUI/issues/2307).
+ * ons-list-item: Fixed [#2292](https://github.com/OnsenUI/OnsenUI/issues/2292).
+ * ons-navigator: Fixed [#2286](https://github.com/OnsenUI/OnsenUI/issues/2286).
+ * ons-navigator: Fixed [#1992](https://github.com/OnsenUI/OnsenUI/issues/1992).
+ * css-components: Fixed [#2045](https://github.com/OnsenUI/OnsenUI/issues/2045).
+ * ons.platform: Fixed [#2279](https://github.com/OnsenUI/OnsenUI/issues/2279).
+ * ons-page: Fixed [#2255](https://github.com/OnsenUI/OnsenUI/issues/2255).
+ * ons-tab: Fixed [#2324](https://github.com/OnsenUI/OnsenUI/issues/2324).
+ * ons-switch: Prevents two `click` events in a row when placed inside a `label` tag.
+ * iOS scroll issues: Related [#2220](https://github.com/OnsenUI/OnsenUI/issues/2220), [#2279](https://github.com/OnsenUI/OnsenUI/issues/2279), [#1949](https://github.com/OnsenUI/OnsenUI/issues/1949) - Fixed in WKWebView/iOS Safari. For UIWebView, a new `ons.forceUIWebViewScrollFix()` method is available which may negatively affect momentum scroll in some situations. Also, a `ons-ios-scroll` class is added to `document.body` when dialogs are visible to apply custom fixes.
+
+ ### Misc
+
+ * css-components: Expose Action Sheet variables for Theme Roller.
+ * ons.notification: Display error message when needed imports are missing (AlertDialog, AlertDialogButton, Toast, ActionSheet).
+
+2.8.3
+----
+
+ ### New Features
+
+ * ons-list-item: Skip tappable effect on children with `prevent-tap` attribute or `ons-*` elements.
+ * ons-navigator: `resetToPage` can now perform 'pop' animation if `options.pop` is `true`.
+
+ ### Bug Fixes
+
+ * ons-carousel: Fixed [#2260](https://github.com/OnsenUI/OnsenUI/issues/2260).
+ * ons-progress-circular: Fixed [#1860](https://github.com/OnsenUI/OnsenUI/issues/1860).
+ * css/polyfills: Fixed [#2266](https://github.com/OnsenUI/OnsenUI/issues/2266).
+ * ons-ripple: The effect does not propagate to other `ons-ripple` parents anymore.
+ * ons-carousel: Prevent error state when hidden during the first rendering.
+ * angular1: `ons-scope` directive works when placed on the same element as `var` attribute.
+
+ ### Misc
+
+ * Show warning when Onsen UI is loaded more than once (UMD - ESM).
+ * ons-pull-hook: `threshold-height` is not disabled anymore when its value is lower than the height.
+ * angular1: Revised the exposed DOM properties for carousel, modal, navigator, popover, pullHook, splitter, splitterSide, switch and tabbar.
+
 2.8.2
 ----
 

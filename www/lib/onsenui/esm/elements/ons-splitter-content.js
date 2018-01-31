@@ -22,7 +22,7 @@ limitations under the License.
 
 */
 
-import ons from '../ons';
+import onsElements from '../ons/elements';
 import util from '../ons/util';
 import internal from '../ons/internal';
 import ModifierUtil from '../ons/internal/modifier-util';
@@ -81,7 +81,7 @@ var SplitterContentElement = function (_BaseElement) {
    * @type {String}
    * @description
    *   [en]
-   *     The url of the content page. If this attribute is used the content will be loaded from a `<ons-template>` tag or a remote file.
+   *     The url of the content page. If this attribute is used the content will be loaded from a `<template>` tag or a remote file.
    *
    *     It is also possible to put `<ons-page>` element as a child of the element.
    *   [/en]
@@ -143,8 +143,8 @@ var SplitterContentElement = function (_BaseElement) {
      * @method load
      * @signature load(page, [options])
      * @param {String} page, [options]
-     *   [en]Page URL. Can be either an HTML document or an `<ons-template>` id.[/en]
-     *   [ja]pageのURLか、ons-templateで宣言したテンプレートのid属性の値を指定します。[/ja]
+     *   [en]Page URL. Can be either an HTML document or an `<template>` id.[/en]
+     *   [ja]pageのURLか、`<template>`で宣言したテンプレートのid属性の値を指定します。[/ja]
      * @param {Object} [options]
      * @param {Function} [options.callback]
      * @description
@@ -258,5 +258,5 @@ var SplitterContentElement = function (_BaseElement) {
 export default SplitterContentElement;
 
 
-ons.elements.SplitterContent = SplitterContentElement;
+onsElements.SplitterContent = SplitterContentElement;
 customElements.define('ons-splitter-content', SplitterContentElement);
