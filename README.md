@@ -15,6 +15,7 @@ Install the app and run it on your machine or on a smartphone.
 3. [React](https://reactjs.org/)
 4. [Onsen UI](https://onsen.io/)
 5. [react-leaflet](https://github.com/PaulLeCam/react-leaflet)/[Leaflet](http://leafletjs.com/)
+6. [Cordova-promise-fs](https://github.com/markmarijnissen/cordova-promise-fs)
 
 #### Installation
 - Clone this repository
