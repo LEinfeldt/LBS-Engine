@@ -4,12 +4,17 @@ const React = require('react');
 const Ons = require('react-onsenui');
 
 //custom files
+//data
 const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
+//ui
 const map = require('./map.js');
 const pictureView =  require('./pictureView.js');
 const settings = require('./settings.js');
 const embededSite = require('./embededSite.js')
+//logic
+const locationManager = require('../business_components/locationManager.js');
+const logger = require('../business_components/logger.js');
 
 
 /**
@@ -138,8 +143,8 @@ class App extends React.Component {
         return [
             //Welcome page iframe 
             {
-                content: <embededSite.EmbededComponent site='https://www.uni-muenster.de/Geoinformatics/en/' />,
-                tab: <Ons.Tab label='Embed' icon='md-settings' key='embeded' style={{display: 'none'}}/>
+                content: <embededSite.EmbededComponent site='https://www.uni-muenster.de/Geoinformatics/en/' key='welcome' name='Splashscreen' />,
+                tab: <Ons.Tab label='Welcome' icon='md-settings' key='welcome' style={{display: 'none'}}/>
             },
             //map element
             {
@@ -185,8 +190,8 @@ class App extends React.Component {
             },
             //about page iframe 
             {
-                content: <embededSite.EmbededComponent site='http://uni-muenster.de' />,
-                tab: <Ons.Tab label='Embed' icon='md-settings' key='embeded' style={{display: 'none'}}/>
+                content: <embededSite.EmbededComponent site='http://uni-muenster.de' key='about' name='About' />,
+                tab: <Ons.Tab label='About' icon='md-settings' key='about' style={{display: 'none'}}/>
             },
             //ship  around an error in current onsen release
             {
@@ -252,6 +257,32 @@ class App extends React.Component {
                                 if(event.index != this.state.index) {
                                     this.setState({index: event.index});
                                 }
+
+                                var modeName;
+                                switch(event.index) {
+                                    case 0: modeName = 'Splashscreen'
+                                        break;
+                                    case 1: modeName = 'Map'
+                                        break;
+                                    case 2: modeName = 'Streetview'
+                                        break;
+                                    case 3: modeName = 'Settings'
+                                        break;
+                                    case 4: modeName = 'About';
+                                }
+
+                                var entry;
+                                //get the current position for the log
+                                locationManager.getLocation().then(function success(position) {
+                                    entry = [position.latitude, position.longitude, modeName, 'Changed View'];
+                                    //log the data
+                                    logger.logEntry(entry);
+                                }, function error(err) {
+                                    //if there was an error getting the position, log a '-' for lat/lng
+                                    entry = ['-', '-', modeName, 'Changed View'];
+                                    //log the data
+                                    logger.logEntry(entry);
+                                })
                             }}
                         renderTabs={this.renderTabs} />
                 </Ons.Page>
