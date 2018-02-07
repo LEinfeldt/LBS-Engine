@@ -103,36 +103,78 @@ class Settings extends React.Component {
 
     render() {
         return (
-            <div>
-                <section style={{textAlign: 'center'}}>
-                    <p>Logging: </p>
-                    <Ons.Switch 
-                        checked={this.props.logging}
-                        onChange={this.handleChangeLogging} />
-                    <p>External Data Sources: </p>
-                    <Ons.Switch 
-                        checked={this.props.externalData}
-                        onChange={this.handleChangeData} />
-                    <p>GPS: </p>
-                    <Ons.Switch 
-                        checked={this.props.gps}
-                        onChange={this.handleChangeGPS} />
-                    <p>Layer Control: </p>
-                    <Ons.Switch 
-                        checked={this.props.layerControl}
-                        onChange={this.handleChangeLayerControl} />
-                    <p>Drag map: </p>
-                    <Ons.Switch 
-                        checked={this.props.draggable}
-                        onChange={this.handleChangeDragMap} />
-                    <p>Zoom map: </p>
-                    <Ons.Switch 
-                        checked={this.props.zoomable}
-                        onChange={this.handleChangeZoomMap} />
-                    <p>Stop Logging and write File</p>
-                    <Ons.Button onClick={logger.stopLoggingAndWriteFile}>Write Logfile</Ons.Button>
-                </section>
-            </div>
+            <Ons.Page>
+                <Ons.List>
+                    <Ons.ListItem key='logging'>
+                        <div className='left'>
+                            <p>Logging </p>
+                        </div>
+                        <div className='right'>
+                            <Ons.Switch 
+                                checked={this.props.logging}
+                                onChange={this.handleChangeLogging} />
+                        </div>
+                    </Ons.ListItem>
+                    <Ons.ListItem key='externalData'>
+                        <div className='left'>
+                            <p>External data </p>
+                        </div>
+                        <div className='right'>
+                            <Ons.Switch 
+                                checked={this.props.externalData}
+                                onChange={this.handleChangeData} />
+                        </div>
+                    </Ons.ListItem>
+                    <Ons.ListItem key='gps'>
+                        <div className='left'>
+                            <p>GPS </p>
+                        </div>
+                        <div className='right'>
+                            <Ons.Switch 
+                                checked={this.props.gps}
+                                onChange={this.handleChangeGPS} />
+                        </div>
+                    </Ons.ListItem>
+                    <Ons.ListItem key='layerControl'>
+                        <div className='left'>
+                            <p>Layer Control</p>
+                        </div>
+                        <div className='right'>
+                            <Ons.Switch 
+                                checked={this.props.layerControl}
+                                onChange={this.handleChangeLayerControl} />
+                        </div>
+                    </Ons.ListItem>
+                    <Ons.ListItem key='dragging'>
+                        <div className='left'>
+                            <p>Drag Map</p>
+                        </div>
+                        <div className='right'>
+                            <Ons.Switch 
+                                checked={this.props.draggable}
+                                onChange={this.handleChangeDragMap} />
+                        </div>
+                    </Ons.ListItem>
+                    <Ons.ListItem key='zoom'>
+                        <div className='left'>
+                            <p>Zoom Map</p>
+                        </div>
+                        <div className='right'>
+                            <Ons.Switch 
+                                checked={this.props.zoomable}
+                                onChange={this.handleChangeZoomMap} />
+                        </div>
+                    </Ons.ListItem>
+                    <Ons.ListItem key='stopLogging'>
+                        <div className='left'>
+                            <p>Stop Logging</p>
+                        </div>
+                        <div className='right'>
+                            <Ons.Button onClick={logger.stopLoggingAndWriteFile}>Write Logfile</Ons.Button>
+                        </div>
+                    </Ons.ListItem>
+                </Ons.List>
+            </Ons.Page>
         )
     }
 }
