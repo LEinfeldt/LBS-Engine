@@ -1,14 +1,10 @@
 # LBS-Engine
 
-This is a Cordova app, developed to allow users to create a location based service without detailed programming knowledge. The app can be adjusted using two configuration files, that are adapted to the user's needs.
+This is a Cordova app, developed to allow users to create a location based service without detailed programming knowledge. The app can be adjusted using two configuration files, that can be changed to settings fitting the user's needs.
 
 LBS-Engine was developed for the [ifgi](http://ifgi.de). Its main purpose is to have a basic template for running user studies in the field of geoinformatics.
 
-## Installation
-
-Install the app and run it on your machine or on a smartphone.
-
-#### Technologies used
+## Technologies used
 
 1. [node.js](https://nodejs.org/en/)
 2. [Apache Cordova](https://cordova.apache.org/)
@@ -16,6 +12,16 @@ Install the app and run it on your machine or on a smartphone.
 4. [Onsen UI](https://onsen.io/)
 5. [react-leaflet](https://github.com/PaulLeCam/react-leaflet)/[Leaflet](http://leafletjs.com/)
 6. [Cordova-promise-fs](https://github.com/markmarijnissen/cordova-promise-fs)
+
+## Installation
+
+Install the app and run it on your machine or on a smartphone.
+
+#### Required Software
+Install this software to run this project:
+
+- Apache Cordova
+- node.js (npm)
 
 #### Installation
 - Clone this repository
@@ -26,7 +32,7 @@ Install the app and run it on your machine or on a smartphone.
 ## Modifications of the existing app
 
 #### Modify the app's defaults
-- Go the the file `src/data_components/config.json`
+- Go the the file `src/data_components/config.json` (contains all available settings)
 - Set the settings in the `app` component in a way you want your default settings (`true/false` values)
 - Adjust the map settings: 
     - `center`: Center of the map as default (when GPS is off). Use latitude/longitude value pairs
@@ -35,7 +41,7 @@ Install the app and run it on your machine or on a smartphone.
     - `zoom`: Value between 0 and 18 (0 = mininmal zoom, 18 = maximum zoom)
 
 #### Modify the displayed data
-- Go to the file `src/data_components/layers.json`
+- Go to the file `src/data_components/layers.json` (containing sample data as an example)
 - Edit the file with your layers
     - Each layer must be a `json` Object wrapped in `{}`
     - Each layer can be one of eigther `marker` or `route` 
