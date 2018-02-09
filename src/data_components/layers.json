@@ -7,7 +7,8 @@
                     52.00,
                     7.00
                 ],
-                "name": "first POI"
+                "name": "first POI",
+                "popup": "Hello I'm a pop-up"
             },
             {
                 "coords": [
@@ -34,7 +35,8 @@
                     52.00,
                     9.00
                 ],
-                "name": "fourth POI"
+                "name": "fourth POI",
+                "popup": "Here is another pop-up"
             }
         ]
     },
