@@ -17,29 +17,28 @@ var fs = CordovaPromiseFS({
 /**
  * Check if there is already a file existing. If so, use it, else create one.
  */
-function getFile() {
- 
+function createFile() {
+
+    var date =  new Date();
+    var filename = 'Log' + '_' + date.getDate().toString() + '_' 
+                    + date.getMonth().toString() + '_' 
+                    + date.getFullYear().toString() + '_' 
+                    + date.getHours().toString() + '_' 
+                    + date.getMinutes().toString();
+
     //return a promise of the file, that is created or found
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         //check for the file system ready
         fs.deviceready.then(function () {
-            fs.exists('lbs-engine-logger.csv').then(function success(result) {
-                //use the file that already exists
-                if(result != false) resolve(result);
-                //if there was no file, create a new one
-                if(result == false) {    
-                    fs.create('lbs-engine-logger.csv').then(function (result) {
-                        //resolve the new created file entry in the promise
-                        resolve(result);
-                    }, function error(err) {
-                        console.log(err);
-                    });}
-                }, function error(err) {
-                    console.log(err);
-                })
-            });
+            fs.create(filename + '.csv').then(function success(result) {
+                //resolve the new file to the promise
+                resolve(result);
+            }, function error(err) {
+                console.log(err);
+            })
         });
-    };
+    });
+};
 
     
 /**
@@ -103,7 +102,7 @@ function stopLoggingAndWriteFile() {
     }
     
     //get the file and write data into it
-    getFile().then(function success(file) {
+    createFile().then(function success(file) {
         console.log(file);
         //write data
         fs.write(file.fullPath, writeData).then(function success(value) {

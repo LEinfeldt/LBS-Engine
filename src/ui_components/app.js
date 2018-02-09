@@ -103,7 +103,7 @@ class App extends React.Component {
 
     //toolbar on top of the app, contains name of the app and the menu button
     renderToolbar() {
-        const titles = ['Welcome to the App', 'Map', 'Streetview', 'Settings', 'About'];
+        const titles = ['About', 'Map', 'Streetview', 'Settings', 'Help'];
         return (
             <Ons.Toolbar>
                 <div className='center'>{titles[this.state.index]}</div>
@@ -255,8 +255,8 @@ class App extends React.Component {
                     side='right' 
                     width={'50%'} 
                     style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}}
-                    swipable={true} 
-                    collapse={true} 
+                    swipeable={true}
+                    collapse={true}
                     isOpen={this.state.isOpen} 
                     onClose={this.hide} 
                     onOpen={this.show}>
@@ -266,7 +266,7 @@ class App extends React.Component {
                 </Ons.SplitterSide>
                 <Ons.Page renderToolbar={this.renderToolbar}>
                     <Ons.Tabbar 
-                        swipable={true}
+                        swipeable={false}
                         position='bottom'
                         index={this.state.index}
                         onPreChange={(event) => 
@@ -277,7 +277,7 @@ class App extends React.Component {
 
                                 var modeName;
                                 switch(event.index) {
-                                    case 0: modeName = 'Splashscreen'
+                                    case 0: modeName = 'About'
                                         break;
                                     case 1: modeName = 'Map'
                                         break;
@@ -285,7 +285,7 @@ class App extends React.Component {
                                         break;
                                     case 3: modeName = 'Settings'
                                         break;
-                                    case 4: modeName = 'About';
+                                    case 4: modeName = 'Help';
                                 }
 
                                 var entry;
