@@ -36,6 +36,7 @@ class App extends React.Component {
         this.handleDragMapChange = this.handleDragMapChange.bind(this);
         this.handleClickAbout = this.handleClickAbout.bind(this);
         this.handleClickSettings = this.handleClickSettings.bind(this);
+        this.handleClickHelp = this.handleClickHelp.bind(this);
         this.renderList = this.renderList.bind(this);
         this.renderTabs = this.renderTabs.bind(this);
         this.state = {
@@ -132,6 +133,11 @@ class App extends React.Component {
 
     //handle a click o about --> change state
     handleClickAbout() {
+        this.setState({index: 0});
+    }
+
+    //handle a click o about --> change state
+    handleClickHelp() {
         this.setState({index: 4});
     }
 
@@ -143,8 +149,8 @@ class App extends React.Component {
         return [
             //Welcome page iframe 
             {
-                content: <embededSite.EmbededComponent site='https://www.uni-muenster.de/Geoinformatics/en/' key='welcome' name='Splashscreen' />,
-                tab: <Ons.Tab label='Welcome' icon='md-settings' key='welcome' style={{display: 'none'}}/>
+                content: <embededSite.EmbededComponent site='about.html' key='about' name='About' />,
+                tab: <Ons.Tab label='About' icon='' key='about' style={{display: 'none'}}/>
             },
             //map element
             {
@@ -190,10 +196,11 @@ class App extends React.Component {
             },
             //about page iframe 
             {
-                content: <embededSite.EmbededComponent site='http://uni-muenster.de' key='about' name='About' />,
-                tab: <Ons.Tab label='About' icon='md-settings' key='about' style={{display: 'none'}}/>
+                content: <embededSite.EmbededComponent site='help.html' key='about' name='Help' />,
+                tab: <Ons.Tab label='Help' icon='md-help' key='help' style={{display: 'none'}}/>
             },
             //ship  around an error in current onsen release
+            //can be solved with an update of onsen/onsen react --> issue: https://github.com/OnsenUI/OnsenUI/issues/2307
             {
                 content: <div key='placeholder' />,
                 tab: null
@@ -207,6 +214,16 @@ class App extends React.Component {
             <Ons.List>
                 <Ons.ListItem 
                     tappable={true}
+                    onClick={this.handleClickAbout}>
+                        <div className='left'>
+                            <Ons.Icon icon='md-info'/>
+                        </div>
+                        <div className='center'>
+                            About
+                        </div>
+                </Ons.ListItem>
+                <Ons.ListItem 
+                    tappable={true}
                     onClick={this.handleClickSettings}>
                         <div className='left'>
                             <Ons.Icon icon='md-settings'/>
@@ -217,12 +234,12 @@ class App extends React.Component {
                 </Ons.ListItem>
                 <Ons.ListItem 
                     tappable={true}
-                    onClick={this.handleClickAbout}>
+                    onClick={this.handleClickHelp}>
                         <div className='left'>
-                            <Ons.Icon icon='md-info'/>
+                            <Ons.Icon icon='md-help'/>
                         </div>
                         <div className='center'>
-                            About
+                            Help
                         </div>
                 </Ons.ListItem>
             </Ons.List>
