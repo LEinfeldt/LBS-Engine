@@ -50,6 +50,7 @@ Install this software to run this project:
     - Each item must have a unique `name`
     - Provide the coordinates of your layers in pairs of latitude/longitude
     - Routes are used as single layer, so to add multiple `route` objects, add multiple layers
+    - Add a pop-up to a marker by adding the element `popup` to an item of a marker. This will be displayed. It can be be styled with html elements (example: `<b>Hello world!</b><br>I am a popup.`)
 
 #### Adding pictures for streetview
 Add the picture to the folder `www/img`.
