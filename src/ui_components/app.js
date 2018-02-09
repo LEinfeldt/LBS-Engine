@@ -200,7 +200,7 @@ class App extends React.Component {
             },
             //about page iframe 
             {
-                content: <embededSite.EmbededComponent site='help.html' key='about' name='Help' />,
+                content: <embededSite.EmbededComponent site='help.html' key='help' name='Help' />,
                 tab: <Ons.Tab label='Help' icon='md-help' key='help' style={{display: 'none'}}/>
             },
             //ship  around an error in current onsen release
@@ -278,32 +278,35 @@ class App extends React.Component {
                                 if(event.index != this.state.index) {
                                     this.setState({index: event.index});
                                 }
+                                
+                                //check if logging is enabled and create a log if so
+                                if(this.state.logging) {
+                                    var modeName;
+                                    switch(event.index) {
+                                        case 0: modeName = 'About'
+                                            break;
+                                        case 1: modeName = 'Map'
+                                            break;
+                                        case 2: modeName = 'Streetview'
+                                            break;
+                                        case 3: modeName = 'Settings'
+                                            break;
+                                        case 4: modeName = 'Help';
+                                    }
 
-                                var modeName;
-                                switch(event.index) {
-                                    case 0: modeName = 'About'
-                                        break;
-                                    case 1: modeName = 'Map'
-                                        break;
-                                    case 2: modeName = 'Streetview'
-                                        break;
-                                    case 3: modeName = 'Settings'
-                                        break;
-                                    case 4: modeName = 'Help';
+                                    var entry;
+                                    //get the current position for the log
+                                    locationManager.getLocation().then(function success(position) {
+                                        entry = [position.latitude, position.longitude, modeName, 'Changed View'];
+                                        //log the data
+                                        logger.logEntry(entry);
+                                    }, function error(err) {
+                                        //if there was an error getting the position, log a '-' for lat/lng
+                                        entry = ['-', '-', modeName, 'Changed View'];
+                                        //log the data
+                                        logger.logEntry(entry);
+                                    })
                                 }
-
-                                var entry;
-                                //get the current position for the log
-                                locationManager.getLocation().then(function success(position) {
-                                    entry = [position.latitude, position.longitude, modeName, 'Changed View'];
-                                    //log the data
-                                    logger.logEntry(entry);
-                                }, function error(err) {
-                                    //if there was an error getting the position, log a '-' for lat/lng
-                                    entry = ['-', '-', modeName, 'Changed View'];
-                                    //log the data
-                                    logger.logEntry(entry);
-                                })
                             }}
                         renderTabs={this.renderTabs} />
                 </Ons.Page>

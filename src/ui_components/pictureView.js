@@ -33,7 +33,7 @@ class PictureView extends React.Component {
                     <img style={{display: 'block', width: '100%'}} src={filepath}/>
                 </Ons.Row>
                 <Ons.Row style={{width: '100%', height: '50%'}}>
-                    <map.Map logging={this.props.logging} externalData={this.props.externalData} gps={this.props.gps} layerControl={this.props.layerControl}
+                    <map.Map picture={true} logging={this.props.logging} externalData={this.props.externalData} gps={this.props.gps} layerControl={this.props.layerControl}
                             draggable={this.props.draggable}  zoomable={this.props.zoomable}/>
                 </Ons.Row>
             </div>

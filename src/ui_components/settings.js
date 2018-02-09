@@ -41,7 +41,7 @@ class Settings extends React.Component {
                 logger.logEntry(entry);
             }, function error(err) {
                 //if there was an error getting the position, log a '-' for lat/lng
-                entry = ['-', '-', 'Settigns', action];
+                entry = ['-', '-', 'Settings', action];
                 //log the data
                 logger.logEntry(entry);
             })

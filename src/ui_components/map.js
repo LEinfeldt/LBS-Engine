@@ -7,6 +7,7 @@ const config = require('../data_components/config.json');
 const layers = require('../data_components/layers.json');
 //logic
 const locationManager = require('../business_components/locationManager.js');
+const logger = require('../business_components/logger.js');
 
 class Map extends React.Component {
 
@@ -14,6 +15,8 @@ class Map extends React.Component {
         super(props);
         this.addLayers = this.addLayers.bind(this);
         this.renderMapWithLayers = this.renderMapWithLayers.bind(this);
+        this.handleOverlayadd = this.handleOverlayadd.bind(this);
+        this.handleOverlayremove = this.handleOverlayremove.bind(this);
         //get the settings from the config file
         this.state = {
             position: config.map.center,
@@ -47,6 +50,53 @@ class Map extends React.Component {
         })
     }
 
+    /**
+     * Write a log that notes the change of active layers
+     * @param {boolean} change If the layer was added or removed
+     * @param {String} data Name of the layer that was toggled
+     */
+    createLog(change, data) {
+        var action;
+        var that = this;
+        if(this.props.logging) {
+            //define the log
+            if(change) {
+                action =  'Activate ' + data;
+            }
+            else action = 'Deactivate ' + data;
+            var entry;
+            //get the current position for the log
+            locationManager.getLocation().then(function success(position) {
+                entry = [position.latitude, position.longitude, that.props.picture ? 'Streetview' : 'Map', action];
+                //log the data
+                logger.logEntry(entry);
+            }, function error(err) {
+                //if there was an error getting the position, log a '-' for lat/lng
+                entry = ['-', '-', that.props.picture ? 'Streetview' : 'Map', action];
+                //log the data
+                logger.logEntry(entry);
+            })
+        }
+    }
+
+    /**
+     * Handle the activation of a layer on the map
+     * @param {Object} e Layer Object fired by leaflet
+     */
+    handleOverlayadd(e) {
+
+        this.createLog(true, e.name);
+    }
+
+    /**
+     * Handle the deactivation of a layer on the map
+     * @param {Object} e Layer Object fired by leaflet
+     */
+    handleOverlayremove(e) {
+        
+        this.createLog(false, e.name);
+    }
+
     //get the elements from the layer.json file and add each layer with a layercontrol.Overlay to the map
     addLayers() {
         var mapLayers = [];
@@ -62,7 +112,13 @@ class Map extends React.Component {
             else if (layers[layer].type == 'route') {
                 layerElement.push(<leaflet.Polyline positions={layers[layer].coords} color='red' key={layers[layer].name} />);
             }
-            mapLayers.push(<leaflet.LayersControl.Overlay key={layer} name={layer} checked={true}><leaflet.LayerGroup key={layer}>{layerElement}</leaflet.LayerGroup></leaflet.LayersControl.Overlay>)
+            mapLayers.push(<leaflet.LayersControl.Overlay key={layer} 
+                                                        name={layer} 
+                                                        checked={true}>
+                                                        <leaflet.LayerGroup key={layer}>
+                                                            {layerElement}
+                                                        </leaflet.LayerGroup>
+                            </leaflet.LayersControl.Overlay>)
         }
         return mapLayers;
     }
@@ -81,7 +137,9 @@ class Map extends React.Component {
                 dragging={this.props.draggable}
                 zoomControl={this.props.zoomable}
                 scrollWheelZoom={this.props.zoomable}
-                zoomDelta={this.props.zoomable == false ? 0 : 1}>
+                zoomDelta={this.props.zoomable == false ? 0 : 1}
+                onOverlayadd={this.handleOverlayadd}
+                onOverlayremove={this.handleOverlayremove}>
                 <leaflet.TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
