@@ -259,7 +259,7 @@ class App extends React.Component {
                     side='right' 
                     width={'50%'} 
                     style={{boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'}}
-                    swipeable={true}
+                    swipeable={false}
                     collapse={true}
                     isOpen={this.state.isOpen} 
                     onClose={this.hide} 
