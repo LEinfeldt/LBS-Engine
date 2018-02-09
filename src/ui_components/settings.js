@@ -165,14 +165,6 @@ class Settings extends React.Component {
                                 onChange={this.handleChangeZoomMap} />
                         </div>
                     </Ons.ListItem>
-                    <Ons.ListItem key='stopLogging'>
-                        <div className='left'>
-                            <p>Stop Logging</p>
-                        </div>
-                        <div className='right'>
-                            <Ons.Button onClick={logger.stopLoggingAndWriteFile}>Write Logfile</Ons.Button>
-                        </div>
-                    </Ons.ListItem>
                 </Ons.List>
             </Ons.Page>
         )

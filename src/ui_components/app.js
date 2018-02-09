@@ -52,6 +52,10 @@ class App extends React.Component {
         };
     }
 
+    componentDidMount() {
+        document.addEventListener("pause", logger.stopLoggingAndWriteFile, false);
+    }
+
     /**
      * Handle the change of the parameter from the lower level
      * @param {Boolean} bool value of the change 
