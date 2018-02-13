@@ -12,6 +12,7 @@ LBS-Engine was developed for the [ifgi](http://ifgi.de). Its main purpose is to 
 4. [Onsen UI](https://onsen.io/)
 5. [react-leaflet](https://github.com/PaulLeCam/react-leaflet)/[Leaflet](http://leafletjs.com/)
 6. [Cordova-promise-fs](https://github.com/markmarijnissen/cordova-promise-fs)
+7. [leaflet-offline](https://github.com/robertomlsoares/leaflet-offline)
 
 ## Installation
 
