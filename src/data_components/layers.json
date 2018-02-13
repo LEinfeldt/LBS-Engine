@@ -17,8 +17,7 @@
                 ],
                 "name": "second POI"
             }
-        ],
-        "color": "blue"
+        ]
     },
     "Layer2": {
         "type": "marker",

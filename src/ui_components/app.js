@@ -53,7 +53,9 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        document.addEventListener("pause", logger.stopLoggingAndWriteFile, false);
+        if(this.state.logging) {
+            document.addEventListener("pause", logger.stopLoggingAndWriteFile, false);
+        }
     }
 
     /**

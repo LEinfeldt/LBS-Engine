@@ -8,6 +8,7 @@ const layers = require('../data_components/layers.json');
 //logic
 const locationManager = require('../business_components/locationManager.js');
 const logger = require('../business_components/logger.js');
+const OfflineLayer = require('../business_components/offlineLayer.js');
 
 class Map extends React.Component {
 
@@ -127,9 +128,9 @@ class Map extends React.Component {
             mapLayers.push(<leaflet.LayersControl.Overlay key={layer} 
                                                         name={layer} 
                                                         checked={true}>
-                                                        <leaflet.LayerGroup key={layer}>
+                                                        <leaflet.FeatureGroup key={layer}>
                                                             {layerElement}
-                                                        </leaflet.LayerGroup>
+                                                        </leaflet.FeatureGroup>
                             </leaflet.LayersControl.Overlay>)
         }
         return mapLayers;
@@ -159,6 +160,7 @@ class Map extends React.Component {
                 <leaflet.LayersControl position="topleft">
                     {this.addLayers()}
                 </leaflet.LayersControl>
+                <OfflineLayer.OfflineControl />
                 {marker}
             </leaflet.Map>
         )
@@ -185,10 +187,11 @@ class Map extends React.Component {
                     zoomControl={this.props.zoomable}
                     scrollWheelZoom={this.props.zoomable}
                     zoomDelta={this.props.zoomable == false ? 0 : 1}>
-                    <leaflet.TileLayer
+                    <OfflineLayer.OfflineLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     />
+                    <OfflineLayer.OfflineControl />                
                     {marker}
                 </leaflet.Map>
             )
