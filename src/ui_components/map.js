@@ -153,7 +153,7 @@ class Map extends React.Component {
                 zoomDelta={this.props.zoomable == false ? 0 : 1}
                 onOverlayadd={this.handleOverlayadd}
                 onOverlayremove={this.handleOverlayremove}>
-                <leaflet.TileLayer
+                <OfflineLayer.OfflineLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="Map data &copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                 />
