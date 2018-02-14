@@ -24,6 +24,11 @@ Install this software to run this project:
 - Apache Cordova
 - node.js (npm)
 
+To add functionality, or modify the state of the `config.json` or `layers.json`:
+
+- [Browserify](http://browserify.org/)
+- [Babelify](https://github.com/babel/babelify)
+
 #### Installation
 - Clone this repository
 - Add the cordova platform you want to use `cordova platform add <platformname>` [Cordova Getting started](https://cordova.apache.org/#getstarted)
