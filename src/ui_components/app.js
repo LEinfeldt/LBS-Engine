@@ -53,9 +53,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        if(this.state.logging) {
-            document.addEventListener("pause", logger.stopLoggingAndWriteFile, false);
-        }
+        document.addEventListener("pause", logger.stopLoggingAndWriteFile, false);
     }
 
     /**
@@ -278,6 +276,8 @@ class App extends React.Component {
                         onPreChange={(event) => 
                             {
                                 if(event.index != this.state.index) {
+                                    //handle error in onsen ui, triggering the change event of the tabbar with the change event of the carousel
+                                    if(event.index == undefined) return;
                                     this.setState({index: event.index});
                                 }
                                 

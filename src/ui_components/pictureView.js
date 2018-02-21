@@ -5,6 +5,7 @@ const Ons = require('react-onsenui');
 
 //custom imports
 const map = require('./map.js');
+const config = require('../data_components/config.json');
 
 /**
  * Component for displaying the picture view. On top a picture is displayed and below a map.
@@ -15,23 +16,37 @@ class PictureView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            imgUrl: this.props.imgUrl
+            currentImage: 0,
+            images: config.app.numberOfImages,
         }
         this.handlePictureChange = this.handlePictureChange.bind(this);
     }
 
-    //handle a possible change of the picture
-    handlePictureChange(value) {
-        this.setState({imgUrl: value});
+    //handle a change in the carousel
+    handlePictureChange(e) {
+        console.log(this.state.currentImage);
+        console.log(e.activeIndex);
+        this.setState({currentImage: e.activeIndex});
     }
 
     render() {
-        var filepath = 'img/sampleImage.jpg';
+        const filepath = 'img/';
+        var images = [];
+        for(var i = 0; i < this.state.images; i++) {
+            var path = filepath + i + '.jpg';
+            images.push(path);
+        }
         return (
             <div className="center" style={{height: '100%'}}>
-                <Ons.Row style={{width: '100%', height: '50%'}}>
-                    <img style={{display: 'block', width: '100%'}} src={filepath}/>
-                </Ons.Row>
+                <Ons.Carousel onPostChange={this.handlePictureChange} index={this.state.currentImage} style={{width: '100%', height: '50%'}} swipeable autoScroll>
+                    {
+                        images.map( (image, index) => (
+                            <Ons.CarouselItem key={index}>
+                                <img style={{display: 'block', width: '100%'}} src={image}/>
+                            </Ons.CarouselItem>
+                        ))   
+                    }
+                </Ons.Carousel>
                 <Ons.Row style={{width: '100%', height: '50%'}}>
                     <map.Map picture={true} logging={this.props.logging} externalData={this.props.externalData} gps={this.props.gps} layerControl={this.props.layerControl}
                             draggable={this.props.draggable}  zoomable={this.props.zoomable}/>
