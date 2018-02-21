@@ -66,7 +66,7 @@ Add the picture to the folder `www/img`.
 To add further plugins or extensions, create a new file in `src/business_components` with your logic and `export` your functions. Then in the component, that shall be extended (map, streetview), `require` the new file and just use your new functions like `module.method()`. To have the new modules as a part of the app, you need to run the build again `npm run build`.
 
 ## Add more Logs
-The Logger delivered with the app provides two exported fucntions: `logEntry(data)` and `stopLoggingAndWriteFile`. The logs have the structure: `Date/Time, Latitude, Longitude, Mode, Action`. To add more logs create an array and call `logger.logEntry(myData)` with it. The logfile can be found on the devices' root directory and is called `lbs-engine-logger.csv`.  
+The Logger delivered with the app provides two exported functions: `logEntry(data)` and `stopLoggingAndWriteFile`. The logs have the structure: `Date/Time, Latitude, Longitude, Mode, Action`. To add more logs create an array and call `logger.logEntry(myData)` with it. The logfile can be found on the devices' root directory and is called `lbs-engine-logger.csv`.  
 
 ## Further development
 The streetview component is a dummy mode at the moment. An interaction to change the displayed image and respond to location events needs to be implemented.
