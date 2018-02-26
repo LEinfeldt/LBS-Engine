@@ -76,7 +76,10 @@ class OfflineLayer extends leaflet.GridLayer {
     //create the custom layer
     createLeafletElement(props) {
         tilesDb = this.tilesDb;
-        layer = new L.TileLayer.Offline(this.props.url, this.tilesDb, this.props.attribution);
+        layer = new L.TileLayer.Offline(this.props.url, this.tilesDb, {
+            attribution: this.props.attribution,
+            crossOrigin: true
+        });
         return layer;
     }
 
