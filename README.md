@@ -73,5 +73,3 @@ The streetview component is a dummy mode at the moment. An interaction to change
 
 ## Bugs
 Due to an [error](https://github.com/OnsenUI/OnsenUI/issues/2307) in OnsenUI's last version, the tabs are a little hacked right now. Can be fixed with an update of OnsenUI.
-
-Another [issue](https://github.com/OnsenUI/OnsenUI/issues/2356) is the interference of the tabbar with the carousel. I shipped around that by catching the event fired in the tab change.

@@ -277,7 +277,7 @@ class App extends React.Component {
                             {
                                 if(event.index != this.state.index) {
                                     //handle error in onsen ui, triggering the change event of the tabbar with the change event of the carousel
-                                    if(event.index == undefined) return;
+                                    if(event.target !== event.currentTarget) return;
                                     this.setState({index: event.index});
                                 }
                                 
